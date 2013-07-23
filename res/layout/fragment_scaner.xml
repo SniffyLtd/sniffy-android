@@ -1,8 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
 
-</LinearLayout>
+
+    <FrameLayout 
+        android:layout_gravity="bottom"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:orientation="horizontal" >
+        
+  	  <EditText 
+  	      android:id="@+id/barecode_input"
+	        android:inputType="number"
+	        android:layout_height="wrap_content"
+	        android:layout_width="fill_parent"
+	        android:layout_marginRight="100dp"
+	        android:layout_gravity="center_vertical"
+	        android:hint="@string/barecode_hint"/>
+  	  
+        <Button
+            android:id="@+id/search_button"
+	        android:layout_width="100dp"
+	        android:layout_height="50dp"
+			android:text="@string/search_button_label"
+			android:layout_gravity="right"/>
+    </FrameLayout>
+        <Button
+        android:id="@+id/scan_button"
+        android:layout_marginBottom="50dp"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+		android:text="@string/scan_button_label" 
+		android:layout_gravity="top"/>
+</FrameLayout>

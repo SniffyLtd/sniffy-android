@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Nazwa</string>
     <string name="action_settings">Ustawienia</string>
     <string name="title_scaner_tab">Skaner</string>
     <string name="title_history_tab">Historia</string>
     <string name="title_dashboard_tab">Pulpit</string>
+    <string name="scan_button_label">Skanuj</string>
+    <string name="barecode_hint">Kod kreskowy</string>
+    <string name="search_button_label">Szukaj</string>
+    <string name="title_activity_product_details">ProductDetailsActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

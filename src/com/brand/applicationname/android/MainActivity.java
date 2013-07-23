@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +38,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     private ViewPager mViewPager;
 
+
+	private DashboardFragment dashboardFragment;
+
+	private HistoryFragment historyFragment;
+
+	private ScanerFragment scanerFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +52,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false); 
+        actionBar.setDisplayShowHomeEnabled(false);
+        
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
@@ -113,13 +125,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Fragment fragment = null;
             switch(position){
             case SCANER_TAB:
-            	fragment = new ScanerFragment();
+            	scanerFragment = new ScanerFragment();
+            	fragment = scanerFragment;
             	break;
             case HISTORY_TAB:
-            	fragment = new HistoryFragment();
+            	historyFragment = new HistoryFragment();
+            	fragment = historyFragment;
             	break;
             case DASHBOARD_TAB:
-            	fragment = new DashboardFragment();
+            	dashboardFragment = new DashboardFragment();
+            	fragment = dashboardFragment;
             	break;
             default:
             	throw new IllegalStateException("Unknow tab position.");
@@ -147,5 +162,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+		if(requestCode == ScanerFragment.SCAN_REQUEST_CODE){
+			scanerFragment.requestSearch("");
+		}
+	
+		
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }
