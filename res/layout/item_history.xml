@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="5dp" >
+
+    <ImageView
+        android:id="@+id/product_thumbnail"
+        android:layout_marginTop="7dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="5dp"
+        android:background="@android:color/black"
+        android:contentDescription="@string/product_thumbnail_description" />
+    <TextView
+        android:id="@+id/date_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:textSize="12sp"  />
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="7dp"
+        android:layout_toLeftOf="@id/date_view"
+        android:layout_toRightOf="@+id/product_thumbnail"
+        android:background="@android:color/black" />
+    <TextView
+        android:id="@+id/barecode_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/frameLayout1"
+        android:layout_toRightOf="@+id/product_thumbnail"
+        android:text="@string/barecode_label"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/barecode_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/barecode_label"
+        android:layout_toRightOf="@+id/product_thumbnail"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/product_name_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/product_thumbnail"
+        android:layout_marginTop="5dp"/>
+    <LinearLayout
+        android:id="@+id/context_menu_frame"
+        android:layout_below="@+id/product_name_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" 
+        android:visibility="gone">
+        <Button 
+            android:id="@+id/open_item_button"
+            android:text="Open"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            />
+        <Button 
+            android:id="@+id/share_item_button"
+            android:text="Share"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            />
+        <Button 
+            android:id="@+id/refresh_item_button"
+            android:text="Refres"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            />
+        <Button 
+            android:id="@+id/delete_item_button"
+            android:text="Delete"
+	        android:layout_width="0dp"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+            />
+    </LinearLayout>
+</RelativeLayout>

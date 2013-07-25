@@ -6,7 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Component {
 
-	@DatabaseField(canBeNull = false)
+	@DatabaseField(id = true)
 	private int id;
 
 	@DatabaseField(canBeNull = false)
@@ -15,6 +15,6 @@ public class Component {
 	@DatabaseField
 	private String equivalentNames;
 	
-	@DatabaseField(foreign = true)
+	@DatabaseField(foreign = true, foreignAutoCreate = false)
 	private ComponentRating rating;
 }

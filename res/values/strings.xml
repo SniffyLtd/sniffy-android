@@ -10,6 +10,8 @@
     <string name="barecode_hint">Kod kreskowy</string>
     <string name="search_button_label">Szukaj</string>
     <string name="title_activity_product_details">ProductDetailsActivity</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="hello_world">Szczegóły produktu!</string>
+	<string name="product_thumbnail_description">Minaturka produktu.</string>
+	<string name="barecode_label">Kod kreskowy</string>
+	<string name="today">Dzisiaj </string>
 </resources>

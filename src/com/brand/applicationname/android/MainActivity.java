@@ -2,6 +2,11 @@ package com.brand.applicationname.android;
 
 import java.util.Locale;
 
+import com.brand.applicationname.android.API.MainActivityNavigation;
+import com.brand.applicationname.android.model.Product;
+import com.brand.applicationname.android.service.ProductService;
+import com.brand.applicationname.android.service.ScanningService;
+
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -12,18 +17,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.view.WindowManager;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener, MainActivityNavigation {
 
-    /**
+    static final int PRODUCT_REQUEST_CODE = 1;
+
+	/**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
      * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
@@ -32,23 +33,36 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    
+    private ProductService productService;
+    
+    private ScanningService scanningService;
+    
+    private ProductService getProductService(){
+    	if(productService == null){
+    		productService = new ProductService(this);
+    	}
+    	return productService;
+    }
+    
+    private ScanningService getScanningService() {
+    	if (scanningService == null){
+    		scanningService= new ScanningService(this);
+    	}
+		return scanningService;
+	}
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
 
-
-	private DashboardFragment dashboardFragment;
-
-	private HistoryFragment historyFragment;
-
-	private ScanerFragment scanerFragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         // Set up the action bar.
         final ActionBar actionBar = getActionBar();
@@ -125,16 +139,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Fragment fragment = null;
             switch(position){
             case SCANER_TAB:
-            	scanerFragment = new ScanerFragment();
-            	fragment = scanerFragment;
+            	fragment = new ScanerFragment();
             	break;
             case HISTORY_TAB:
-            	historyFragment = new HistoryFragment();
-            	fragment = historyFragment;
+            	fragment = new HistoryFragment();
             	break;
             case DASHBOARD_TAB:
-            	dashboardFragment = new DashboardFragment();
-            	fragment = dashboardFragment;
+            	fragment = new DashboardFragment();
             	break;
             default:
             	throw new IllegalStateException("Unknow tab position.");
@@ -164,12 +175,41 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-		if(requestCode == ScanerFragment.SCAN_REQUEST_CODE){
-			scanerFragment.requestSearch("");
-		}
-	
-		
 		super.onActivityResult(requestCode, resultCode, data);
+		
+		if(requestCode == ScanerFragment.SCAN_REQUEST_CODE){
+			if(resultCode == RESULT_OK){
+				String contents = data.getStringExtra("SCAN_RESULT");
+				this.search(contents);
+			}
+		}
+	/*	else if(requestCode == PRODUCT_REQUEST_CODE){
+			ScanerFragment scanerFragment = (ScanerFragment)getSupportFragmentManager().findFragmentById(R.layout.fragment_scaner);
+			if(scanerFragment != null ){
+				scanerFragment.clean();
+			}
+			
+			HistoryFragment historyFragment =(HistoryFragment)getSupportFragmentManager().findFragmentById(R.layout.fragment_history);
+			if(historyFragment != null && historyFragment.isInLayout()){
+				historyFragment.refresh();
+			}
+		}*/
+	}
+
+	@Override
+	public void search(String baredoce) {
+		Product product = getProductService().findProduct(baredoce);
+		if(product == null){
+			product = getProductService().createLocalProduct(baredoce);
+		}
+		getScanningService().create(baredoce, product);
+		openProductDetails(product);
+	}
+
+	@Override
+	public void openProductDetails(Product product) {
+		Intent intent = new Intent(this, ProductDetailsActivity.class);
+		intent.putExtra(ProductDetailsActivity.PRODUCT_PARAMETER, product);
+		startActivityForResult(intent, PRODUCT_REQUEST_CODE);
 	}
 }

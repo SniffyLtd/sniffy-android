@@ -1,5 +1,7 @@
 package com.brand.applicationname.android;
 
+import com.brand.applicationname.android.API.MainActivityNavigation;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +15,9 @@ import android.widget.EditText;
 
 public class ScanerFragment extends Fragment {
 	
+	private MainActivityNavigation activityNavigation;
+	
 	public static final int SCAN_REQUEST_CODE = 0;
-
-	protected static final int PRODUCT_REQUEST_CODE = 1;
 
 	protected static final String BARECODE_PARAM = "barecode";
 
@@ -24,6 +26,17 @@ public class ScanerFragment extends Fragment {
 	private Button searchButton;
 	
 	private EditText barecodeInput;
+	
+	@Override
+	public void onAttach(android.app.Activity activity) {
+		if(activity instanceof MainActivityNavigation){
+			activityNavigation = (MainActivityNavigation)activity;
+		}
+		else{
+			throw new IllegalArgumentException("activity is not instance of MainActivityNavigation interface.");
+		}
+		super.onAttach(activity);
+	};
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,21 +59,20 @@ public class ScanerFragment extends Fragment {
 			
 			@Override
 			public void onClick(View arg0) {
-				String barecode= barecodeInput.getText().toString();
-				Intent intent = new Intent(ScanerFragment.this.getActivity(), ProductDetailsActivity.class);
-				intent.putExtra(BARECODE_PARAM, barecode);
-				getActivity().startActivityForResult(intent, PRODUCT_REQUEST_CODE);
+				String barecode = barecodeInput.getText().toString();
+				activityNavigation.search(barecode);
 			}
 		});
         return rootView;
     }
 
-	public void requestSearch(String barecode) {
-		barecodeInput.setText(barecode);
-		searchButton.performClick();
-		
+	public void clean() {
+		barecodeInput.setText("");
 	}
 
-	
-
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i("KURWA", requestCode+"" );
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 }

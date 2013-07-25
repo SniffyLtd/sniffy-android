@@ -1,10 +1,17 @@
 package com.brand.applicationname.android.service;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.brand.applicationname.android.model.Product;
 
 public class ProductService {
+	
+	private Context context;
+	
+	public ProductService(Context context){
+		this.context = context;
+	}
 
 	private LocalProductService localProductFinder;
 	
@@ -23,7 +30,7 @@ public class ProductService {
 
 	public LocalProductService getLocalProductFinder() {
 		if(localProductFinder == null){
-			localProductFinder = new LocalProductService();
+			localProductFinder = new LocalProductService(context);
 		}
 		
 		return localProductFinder;
@@ -35,6 +42,10 @@ public class ProductService {
 		}
 		
 		return remoteProductFinder;
+	}
+
+	public Product createLocalProduct(String baredoce) {
+		return getLocalProductFinder().createProduct(baredoce);
 	}
 
 }

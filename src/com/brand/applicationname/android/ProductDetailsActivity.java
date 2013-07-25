@@ -6,6 +6,8 @@ import android.view.Menu;
 
 public class ProductDetailsActivity extends Activity {
 
+	public static final String PRODUCT_PARAMETER = "product";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
