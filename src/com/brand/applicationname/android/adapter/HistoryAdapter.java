@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 public class HistoryAdapter extends ArrayAdapter<Scanning> {
 
+	private static final long ANIMATION_DURATION = 250;
+
 	private int viewResourceId;
 	
 	private Context context;
@@ -47,10 +49,10 @@ public class HistoryAdapter extends ArrayAdapter<Scanning> {
 	
 	public void setSelected(int selected){
 		this.selected = selected;
-		notifyDataSetChanged();
+		notifyDataSetInvalidated();
 	}
 
-    private class ViewHolder {
+    class ViewHolder {
 		public ImageView thumbnail;
 		public TextView date;
 		public TextView barecode;
@@ -110,7 +112,7 @@ public class HistoryAdapter extends ArrayAdapter<Scanning> {
 		holder.contexMenuFrame.setVisibility(View.VISIBLE);
 		
 		ExpandAnimation animation = new ExpandAnimation(holder.contexMenuFrame, 50, true);
-		animation.setDuration(500);
+		animation.setDuration(ANIMATION_DURATION);
 		holder.contexMenuFrame.startAnimation(animation);
 	}
 
@@ -203,5 +205,10 @@ public class HistoryAdapter extends ArrayAdapter<Scanning> {
 				onAwsomeContextMenuListener.onRefresh(selected);
 			}
 		}
+	}
+
+
+	public int getSelected() {
+		return this.selected;
 	}
 }

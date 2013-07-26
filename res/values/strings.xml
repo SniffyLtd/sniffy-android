@@ -14,4 +14,8 @@
 	<string name="product_thumbnail_description">Minaturka produktu.</string>
 	<string name="barecode_label">Kod kreskowy</string>
 	<string name="today">Dzisiaj </string>
+	<string name="menu_item_icon">Ikonka menu.</string>
+	<string name="show_comments_menu_item">Pokaż komentarze</string>
+	<string name="report_product_menu_item">Zgłoś błędne dane</string>
+	<string name="show_similars_menu_item">Pokaż podobne produkty</string>
 </resources>

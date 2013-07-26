@@ -7,18 +7,11 @@ import com.brand.applicationname.android.model.Scanning;
 import com.brand.applicationname.android.service.ScanningService;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.support.v4.app.ListFragment;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class HistoryFragment extends Fragment implements OnAwsomContexMenuListener{
-	
-
-	private ListView historyList;
+public class HistoryFragment extends ListFragment implements OnAwsomContexMenuListener{
 	
 	private ScanningService scanningService;
 	
@@ -44,39 +37,32 @@ public class HistoryFragment extends Fragment implements OnAwsomContexMenuListen
 		super.onAttach(activity);
 	};
 	
-	
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-        historyList = (ListView)rootView.findViewById(R.id.history_list);
-        
-        historyAdapter = new HistoryAdapter(getActivity(), R.layout.item_history, getScanningService().lastTeen());
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		historyAdapter = new HistoryAdapter(getActivity(), R.layout.item_history, getScanningService().lastTeen());
         historyAdapter.setOnAwsomContexMenuListener(this);
-        historyList.setAdapter(historyAdapter);
-        
-        historyList.setOnItemClickListener(new OnItemClickListener() {
+        setListAdapter(historyAdapter);
+	}
 
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int selectedPosition, long arg3) {
-				Scanning selected = historyAdapter.getItem(selectedPosition);
-				historyAdapter.setSelected(selected.getId());
-			}
-		});
-        
-        return rootView;
-    }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
 
+		Scanning selected = historyAdapter.getItem(position);
+		historyAdapter.setSelected(selected.getId());
+	}
+	
 	public void refresh() {
-		// TODO Auto-generated method stub
-		
+		historyAdapter.clear();
+		historyAdapter.addAll(getScanningService().lastTeen());
 	}
 
 	@Override
 	public void onRemove(int id) {
-		// TODO Auto-generated method stub
-		
+		getScanningService().remove(id);
+		historyAdapter.setSelected(0);
+		refresh();
 	}
 
 	@Override

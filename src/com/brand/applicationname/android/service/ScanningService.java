@@ -10,6 +10,7 @@ import android.content.Context;
 import com.brand.applicationname.android.model.Database;
 import com.brand.applicationname.android.model.Product;
 import com.brand.applicationname.android.model.Scanning;
+import com.j256.ormlite.stmt.DeleteBuilder;
 
 public class ScanningService {
 
@@ -41,8 +42,17 @@ public class ScanningService {
 		try {
 			return database.getRuntimeExceptionDao(Scanning.class).queryBuilder().where().eq(Scanning.ID_FIELD, id).query().get(0);
 		} catch (SQLException e) {
-			e.printStackTrace();
-			return null;
+			throw new IllegalStateException(e);
+		}
+	}
+
+	public void remove(int id) {
+		try {
+			DeleteBuilder<Scanning, ?> db = database.getRuntimeExceptionDao(Scanning.class).deleteBuilder();
+			db.where().eq(Scanning.ID_FIELD, id);
+			db.delete();
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 }
