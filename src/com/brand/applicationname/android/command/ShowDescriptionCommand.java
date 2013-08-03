@@ -6,14 +6,14 @@ import com.brand.applicationname.android.R;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-public class CommentsCommand implements Command{
+public class ShowDescriptionCommand implements Command {
 
 	private Context context;
 
-	public CommentsCommand(Context context){
+	public ShowDescriptionCommand(Context context){
 		this.context = context;
 	}
-
+	
 	@Override
 	public Drawable getIcon() {
 		return context.getResources().getDrawable(R.drawable.comment_icon);
@@ -21,7 +21,7 @@ public class CommentsCommand implements Command{
 
 	@Override
 	public String getHeader() {
-		return context.getString(R.string.show_comments_menu_item);
+		return context.getString(R.string.show_description_menu_item);
 	}
 
 	@Override
@@ -29,6 +29,7 @@ public class CommentsCommand implements Command{
 		if(param instanceof ProductDetailsActivity){
 			ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
 			detailsActivity.hideAwsomeMenu();
+			detailsActivity.showDetailsFragment(ProductDetailsActivity.DESCRIPTION_DETAILS);
 		}
 		else{
 			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");

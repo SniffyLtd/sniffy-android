@@ -1,5 +1,6 @@
 package com.brand.applicationname.android.command;
 
+import com.brand.applicationname.android.ProductDetailsActivity;
 import com.brand.applicationname.android.R;
 
 import android.content.Context;
@@ -25,7 +26,13 @@ public class ShowSimilarsCommand implements Command{
 
 	@Override
 	public boolean execute(Object param) {
-		// TODO Auto-generated method stub
+		if(param instanceof ProductDetailsActivity){
+			ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
+			detailsActivity.hideAwsomeMenu();
+		}
+		else{
+			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
+		}
 		return false;
 	}
 

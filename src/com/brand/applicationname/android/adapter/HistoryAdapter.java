@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.brand.applicationname.android.R;
 import com.brand.applicationname.android.model.Scanning;
-import com.brand.applicationname.android.utils.ExpandAnimation;
+import com.brand.applicationname.android.utils.ExpandVertilcalAnimation;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -111,7 +111,7 @@ public class HistoryAdapter extends ArrayAdapter<Scanning> {
 		holder.contexMenuFrame.getLayoutParams().height= 0;
 		holder.contexMenuFrame.setVisibility(View.VISIBLE);
 		
-		ExpandAnimation animation = new ExpandAnimation(holder.contexMenuFrame, 50, true);
+		ExpandVertilcalAnimation animation = new ExpandVertilcalAnimation(holder.contexMenuFrame, 50, true);
 		animation.setDuration(ANIMATION_DURATION);
 		holder.contexMenuFrame.startAnimation(animation);
 	}

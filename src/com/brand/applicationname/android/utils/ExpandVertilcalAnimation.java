@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-public class ExpandAnimation extends Animation{
+public class ExpandVertilcalAnimation extends Animation{
 
 	private View view;
 	
@@ -12,7 +12,7 @@ public class ExpandAnimation extends Animation{
 	
 	private boolean expand;
 
-	public ExpandAnimation(final View view, int targetHeight, boolean expand){
+	public ExpandVertilcalAnimation(final View view, int targetHeight, boolean expand){
 		this.view = view;
 		this.targetHeight = targetHeight;
 		this.expand = expand;

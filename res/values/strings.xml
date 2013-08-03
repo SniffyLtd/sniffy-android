@@ -18,4 +18,8 @@
 	<string name="show_comments_menu_item">Pokaż komentarze</string>
 	<string name="report_product_menu_item">Zgłoś błędne dane</string>
 	<string name="show_similars_menu_item">Pokaż podobne produkty</string>
+	<string name="components_item_button_label">Składniki</string>
+	<string name="description_item_button_label">Opis produktu</string>
+	<string name="show_description_menu_item">Pokaż opis</string>
+	<string name="show_components_menu_item">Pokaż składniki</string>
 </resources>

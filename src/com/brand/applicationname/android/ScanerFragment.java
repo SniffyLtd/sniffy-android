@@ -5,7 +5,6 @@ import com.brand.applicationname.android.API.MainActivityNavigation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -72,7 +71,6 @@ public class ScanerFragment extends Fragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i("KURWA", requestCode+"" );
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

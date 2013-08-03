@@ -15,6 +15,8 @@ public class ProductCommandFactory {
 	
 	public List<Command> createComands(){
 		List<Command> commands = new ArrayList<Command>();
+		commands.add(new ShowDescriptionCommand(context));
+		commands.add(new ShowComponentsCommand(context));
 		commands.add(new CommentsCommand(context));
 		commands.add(new ReportCommand(context));
 		commands.add(new ShowSimilarsCommand(context));

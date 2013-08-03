@@ -20,10 +20,13 @@ public class ProductService {
 	public Product findProduct(String barcode) {
 		
 		Product product = getLocalProductFinder().findProduct(barcode);
-		if(product == null){
+		if(product == null || product.isLocal()){
 			Log.i(this.getClass().getName(), "Product not present in local storage. Trying to search online.");
-			product = getRemoteProductFinder().findProduct(barcode);
-			getLocalProductFinder().cache(product);
+			Product remoteProduct = getRemoteProductFinder().findProduct(barcode);
+			if(remoteProduct != null){
+				product = remoteProduct;
+				getLocalProductFinder().cache(product);
+			}
 		}
 		return product;
 	}

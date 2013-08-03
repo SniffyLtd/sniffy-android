@@ -3,32 +3,32 @@ package com.brand.applicationname.android.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brand.applicationname.android.R;
-import com.brand.applicationname.android.command.Command;
+import com.brand.applicationname.android.model.Component;
 
-public class ProductMenuAdapter extends ArrayAdapter<Command>{
+public class ComponentsListAdapter extends ArrayAdapter<Component>{
 	
 	private int viewResourceId;
 	
 	private LayoutInflater inflater;
 
-	public ProductMenuAdapter(Context context, int viewResourceId,
-			List<Command> objects) {
+	public ComponentsListAdapter(Context context, int viewResourceId,
+			List<Component> objects) {
 		super(context, 0, objects);
 		this.viewResourceId = viewResourceId;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 	
 	private class ViewHolder {
-	//	ImageView icon;
-		TextView header;
+		View colorRectangle;
+		TextView name;
 	}
 	
 	@Override
@@ -46,20 +46,21 @@ public class ProductMenuAdapter extends ArrayAdapter<Command>{
 		else{
 			holder = (ViewHolder)convertView.getTag();
 		}
-		Command command = getItem(position);
+		Component component = getItem(position);
 		
-		holder.header.setText(command.getHeader());
-	//	holder.icon.setImageDrawable(command.getIcon());
+		holder.name.setText(component.getName());
+		holder.colorRectangle.setBackgroundColor(Color.parseColor(component.getRating().getColor()));
 		
 		return convertView;
 	}
 
 	private ViewHolder createViewHolder(View convertView) {
 		ViewHolder holder = new ViewHolder();
-		holder.header = (TextView)convertView.findViewById(R.id.menu_item_header);
-	//	holder.icon = (ImageView)convertView.findViewById(R.id.menu_item_icon);
+		holder.name = (TextView)convertView.findViewById(R.id.component_name_label);
+		holder.colorRectangle = convertView.findViewById(R.id.component_rating_color);
 		return holder;
 	}
 	
 	
 }
+

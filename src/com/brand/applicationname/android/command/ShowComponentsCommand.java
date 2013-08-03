@@ -5,30 +5,32 @@ import com.brand.applicationname.android.R;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 
-public class CommentsCommand implements Command{
+public class ShowComponentsCommand implements Command{
 
-	private Context context;
+	private Context contex;
 
-	public CommentsCommand(Context context){
-		this.context = context;
+	public ShowComponentsCommand(Context contex){
+		this.contex = contex;
 	}
-
+	
 	@Override
 	public Drawable getIcon() {
-		return context.getResources().getDrawable(R.drawable.comment_icon);
+		return contex.getResources().getDrawable(R.drawable.comment_icon);
 	}
 
 	@Override
 	public String getHeader() {
-		return context.getString(R.string.show_comments_menu_item);
+		return contex.getResources().getString(R.string.show_components_menu_item);
 	}
 
 	@Override
 	public boolean execute(Object param) {
 		if(param instanceof ProductDetailsActivity){
-			ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
+			final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
 			detailsActivity.hideAwsomeMenu();
+			detailsActivity.showDetailsFragment(ProductDetailsActivity.COMPONENTS_DETAILS);
 		}
 		else{
 			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");

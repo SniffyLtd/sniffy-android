@@ -10,7 +10,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginLeft="5dp"
-        android:background="@android:color/black"
+        android:src="@drawable/food"
+        android:background="@android:color/darker_gray"
         android:contentDescription="@string/product_thumbnail_description" />
     <TextView
         android:id="@+id/date_view"
