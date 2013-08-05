@@ -2,13 +2,16 @@ package com.brand.applicationname.android.command;
 
 import com.brand.applicationname.android.ProductDetailsActivity;
 import com.brand.applicationname.android.R;
+import com.brand.applicationname.android.adapter.DetailsPagerAdapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.os.Handler;
 
 public class ShowComponentsCommand implements Command{
 
+	private final Handler executor = new Handler();
+	
 	private Context contex;
 
 	public ShowComponentsCommand(Context contex){
@@ -30,7 +33,14 @@ public class ShowComponentsCommand implements Command{
 		if(param instanceof ProductDetailsActivity){
 			final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
 			detailsActivity.hideAwsomeMenu();
-			detailsActivity.showDetailsFragment(ProductDetailsActivity.COMPONENTS_DETAILS);
+
+			Runnable runable = new Runnable() {
+				@Override
+				public void run() {
+					detailsActivity.showDetailsFragment(DetailsPagerAdapter.COMPONENTS_DETAILS);
+				}
+			};
+			executor.postDelayed(runable, 300);
 		}
 		else{
 			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");

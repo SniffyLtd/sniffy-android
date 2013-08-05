@@ -10,14 +10,14 @@
         class="com.brand.applicationname.android.ProductMenuFragment"
 	    android:id="@+id/fragment_product_menu"
         android:layout_height="match_parent"
-        android:layout_width="0dp"
-        android:visibility="gone" />
+        android:layout_width="250dp"
+	    android:translationX="-250dp"
+        />
 	<RelativeLayout 
-	    android:layout_toRightOf="@id/fragment_product_menu"
 	    android:id="@+id/product_details_frame"
     	android:layout_width="match_parent"
     	android:layout_height="match_parent"
-	        android:background="@android:color/white">
+	    android:background="@android:color/white">
 	        <LinearLayout 
 	            android:id="@+id/menu_bar"
 	            android:layout_width="fill_parent"

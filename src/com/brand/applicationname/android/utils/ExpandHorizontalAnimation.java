@@ -6,14 +6,17 @@ import android.view.animation.Transformation;
 
 public class ExpandHorizontalAnimation extends Animation{
 
-	private View view;
+	private View leftView;
 	
 	private int targetWidth;
 	
 	private boolean expand;
 
-	public ExpandHorizontalAnimation(final View view, int targetWidth, boolean expand){
-		this.view = view;
+	private View rightView;
+
+	public ExpandHorizontalAnimation(final View leftView, final View rightView, int targetWidth, boolean expand){
+		this.leftView = leftView;
+		this.rightView = rightView;
 		this.targetWidth = targetWidth;
 		this.expand = expand;
 	}
@@ -28,8 +31,9 @@ public class ExpandHorizontalAnimation extends Animation{
 		else{
 			newWidth = (int)((1- interpolatedTime) * targetWidth);
 		}
-		view.getLayoutParams().width = newWidth;
-		view.requestLayout();
+
+		leftView.setTranslationX(newWidth - targetWidth);
+		rightView.setTranslationX(newWidth);
 		super.applyTransformation(interpolatedTime, t);
 	}
 	

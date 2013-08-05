@@ -14,12 +14,21 @@ public class ProductDescriptionFragment extends Fragment {
 
 	private TextView descriptionView;
 	
+	private View rootView;
+	
+	private Product product;
+	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_product_description, container, false);
+        rootView = inflater.inflate(R.layout.fragment_product_description, container, false);
         
         descriptionView = (TextView)rootView.findViewById(R.id.description_label);
+        
+    	
+    	if(product != null && descriptionView != null){
+    		descriptionView.setText(product.getDescription());
+    	}
         return rootView;
 	}
 	
@@ -29,11 +38,8 @@ public class ProductDescriptionFragment extends Fragment {
 		
 		Bundle extras = activity.getIntent().getExtras();
         if (extras.containsKey(ProductDetailsActivity.PRODUCT_PARAMETER)) {
-        	Product product =  (Product)extras.get(ProductDetailsActivity.PRODUCT_PARAMETER);
-        	
-        	if(product != null && descriptionView != null){
-        		descriptionView.setText(product.getDescription());
-        	}
+        	product =  (Product)extras.get(ProductDetailsActivity.PRODUCT_PARAMETER);
+
         }
 	}
 }
