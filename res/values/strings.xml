@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Nazwa</string>
+    <string name="app_name">Sniffy</string>
     <string name="action_settings">Ustawienia</string>
     <string name="title_scaner_tab">Skaner</string>
     <string name="title_history_tab">Historia</string>
