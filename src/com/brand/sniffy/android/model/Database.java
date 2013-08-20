@@ -29,6 +29,7 @@ public class Database extends OrmLiteSqliteOpenHelper{
 			TableUtils.createTable(connection, Component.class);
 			TableUtils.createTable(connection, Product.class);
 			TableUtils.createTable(connection, Scanning.class);
+			TableUtils.createTable(connection, SynchronizationHistory.class);
 		}
 		catch(SQLException e){
 			Log.e(this.getClass().getName(), "Unable to create database.");
@@ -45,6 +46,7 @@ public class Database extends OrmLiteSqliteOpenHelper{
 			TableUtils.dropTable(connection, Component.class, true);
 			TableUtils.dropTable(connection, ComponentRating.class, true);
 			TableUtils.dropTable(connection, Scanning.class, true);
+			TableUtils.dropTable(connection, SynchronizationHistory.class, true);
 			
 			onCreate(database,connectionSource);
 		} catch (SQLException e) {

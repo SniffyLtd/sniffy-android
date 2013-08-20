@@ -7,6 +7,7 @@ import com.brand.sniffy.android.API.MainActivityNavigation;
 import com.brand.sniffy.android.model.Product;
 import com.brand.sniffy.android.service.ProductService;
 import com.brand.sniffy.android.service.ScanningService;
+import com.brand.sniffy.android.service.SynchronizationService;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
@@ -39,6 +40,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     
     private ScanningService scanningService;
     
+    private SynchronizationService synchronizationService;
+    
     private ProductService getProductService(){
     	if(productService == null){
     		productService = new ProductService(this);
@@ -52,6 +55,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	}
 		return scanningService;
 	}
+    
+    private SynchronizationService getSynchronizationService(){
+    	if(synchronizationService == null){
+    		synchronizationService = new SynchronizationService(this);
+    	}
+    	
+    	return synchronizationService;
+    }
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -96,6 +107,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+        
+        getSynchronizationService().requestSynchronization();
     }
 
     @Override

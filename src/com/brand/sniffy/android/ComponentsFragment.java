@@ -16,11 +16,12 @@ public class ComponentsFragment extends ListFragment{
 
 	private ComponentsListAdapter listAdapter;
 	
-	private ComponentsService componentsService = new ComponentsService();
+	private ComponentsService componentsService;
 	
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		componentsService = new ComponentsService(activity);
 		
 		Bundle extras = activity.getIntent().getExtras();
         if (extras.containsKey(ProductDetailsActivity.PRODUCT_PARAMETER)) {
