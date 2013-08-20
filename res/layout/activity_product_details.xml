@@ -7,7 +7,7 @@
 
 
 	<fragment 
-        class="com.brand.applicationname.android.ProductMenuFragment"
+        class="com.brand.sniffy.android.ProductMenuFragment"
 	    android:id="@+id/fragment_product_menu"
         android:layout_height="match_parent"
         android:layout_width="250dp"
