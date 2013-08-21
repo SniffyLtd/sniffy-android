@@ -1,6 +1,12 @@
 package com.brand.sniffy.android.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -17,6 +23,50 @@ public class Product implements Serializable {
 	
 	public static final String NAME_FIELD = "name";
 	
+	public static final String BARECODE_FIELD = "barcode";
+	
+	public static final String DESCRIPTION_FIELD = "description";
+
+	private static final String PRODUCER_FIELD = "producer";
+	
+	private static final String COMPONENTS_JSON_FIELD = "components";
+
+	@DatabaseField(id = true, canBeNull = false)
+	private int id;
+	
+	@DatabaseField
+	private String name;
+	
+	@DatabaseField(canBeNull = false)
+	private String barcode;
+	
+	@DatabaseField
+	private String description;
+
+	@DatabaseField
+	private  boolean local;
+
+	@DatabaseField(foreign = true, foreignAutoCreate = false, foreignAutoRefresh = true)
+	private Producer producer;
+	
+	private transient Set<Component> components = new HashSet<Component>();
+	
+	public Product(){
+		
+	}
+	
+	public Product(JSONObject json) throws JSONException  {
+		id = json.getInt(ID_FIELD);
+		name = json.getString(NAME_FIELD);
+		barcode = json.getString(BARECODE_FIELD);
+		description = json.getString(DESCRIPTION_FIELD);
+		producer = new Producer(json.getJSONObject(PRODUCER_FIELD));
+		JSONArray componetIds = json.getJSONArray(COMPONENTS_JSON_FIELD);
+		for(int i=0; i < componetIds.length(); ++i){
+			components.add(new Component(componetIds.getInt(i)));
+		}
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -33,12 +83,12 @@ public class Product implements Serializable {
 		this.name = name;
 	}
 
-	public String getBarecode() {
-		return barecode;
+	public String getBarcode() {
+		return barcode;
 	}
 
-	public void setBarecode(String barecode) {
-		this.barecode = barecode;
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
 	public String getDescription() {
@@ -57,23 +107,20 @@ public class Product implements Serializable {
 		this.local = local;
 	}
 
-	public static final String BARECODE_FIELD = "barecode";
-	
-	public static final String DESCRIPTION_FIELD = "description";
+	public Producer getProducer() {
+		return producer;
+	}
 
-	@DatabaseField(id = true, canBeNull = false)
-	private int id;
-	
-	@DatabaseField
-	private String name;
-	
-	@DatabaseField(canBeNull = false)
-	private String barecode;
-	
-	@DatabaseField
-	private String description;
+	public void setProducer(Producer producer) {
+		this.producer = producer;
+	}
 
-	@DatabaseField
-	private  boolean local;
+	public Set<Component> getComponents() {
+		return components;
+	}
+
+	public void setComponents(Set<Component> components) {
+		this.components = components;
+	}
 	
 }

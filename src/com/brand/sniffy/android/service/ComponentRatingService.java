@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import com.brand.sniffy.android.model.ComponentRating;
 import com.brand.sniffy.android.model.Database;
-import com.brand.sniffy.android.model.Product;
 import com.brand.sniffy.android.model.Scanning;
 
 public class ComponentRatingService {
@@ -21,21 +21,18 @@ public class ComponentRatingService {
 		database = new Database(context);
 	}
 	
-	public void applyChanges(JSONArray ratings){
+	public void applyChanges(JSONArray ratings) throws JSONException, SQLException{
 		
 		for(int i =0 ; i< ratings.length(); ++i){
-			try{
+			
 				ComponentRating rating = new ComponentRating(ratings.getJSONObject(i));
 				ComponentRating existingRating = getComponentRating(rating.getId());
 				if(existingRating == null){
-					database.getRuntimeExceptionDao(ComponentRating.class).create(rating);
+					database.getDao(ComponentRating.class).create(rating);
 				}
 				else{
-					database.getRuntimeExceptionDao(ComponentRating.class).update(rating);
+					database.getDao(ComponentRating.class).update(rating);
 				}
-			}catch(JSONException e){
-				// TODO: log error
-			}
 		}
 	}
 

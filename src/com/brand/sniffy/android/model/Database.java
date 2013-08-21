@@ -25,10 +25,14 @@ public class Database extends OrmLiteSqliteOpenHelper{
 	public void onCreate(SQLiteDatabase database, ConnectionSource connection) {
 		try{
 			Log.i(this.getClass().getName(), "Creating tables.");
+			TableUtils.createTable(connection, Country.class);
+			TableUtils.createTable(connection, Category.class);
 			TableUtils.createTable(connection, ComponentRating.class);
 			TableUtils.createTable(connection, Component.class);
+			TableUtils.createTable(connection, Producer.class);
 			TableUtils.createTable(connection, Product.class);
 			TableUtils.createTable(connection, Scanning.class);
+			TableUtils.createTable(connection, ProductComponents.class);
 			TableUtils.createTable(connection, SynchronizationHistory.class);
 		}
 		catch(SQLException e){
@@ -42,11 +46,15 @@ public class Database extends OrmLiteSqliteOpenHelper{
 			int arg3) {
 		try {
 			Log.i(this.getClass().getName(), "Removing old tables.");
-			TableUtils.dropTable(connection, Product.class, true);
+			TableUtils.dropTable(connection, ProductComponents.class, true);
+			TableUtils.dropTable(connection, Producer.class, true);
+			TableUtils.dropTable(connection, Category.class, true);
 			TableUtils.dropTable(connection, Component.class, true);
 			TableUtils.dropTable(connection, ComponentRating.class, true);
+			TableUtils.dropTable(connection, Product.class, true);
 			TableUtils.dropTable(connection, Scanning.class, true);
 			TableUtils.dropTable(connection, SynchronizationHistory.class, true);
+			TableUtils.dropTable(connection, Country.class, true);
 			
 			onCreate(database,connectionSource);
 		} catch (SQLException e) {

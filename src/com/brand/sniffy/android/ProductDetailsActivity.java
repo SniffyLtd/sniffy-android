@@ -92,7 +92,7 @@ public class ProductDetailsActivity extends FragmentActivity {
 	private void showProductInDisplayMode(Product product) {
 		categoryLabel.setText("Kategoria produktu >> Podkategoria produktu >> itd");
 		nameLabel.setText(product.getName());
-		barecodeLabel.setText(product.getBarecode());
+		barecodeLabel.setText(product.getBarcode());
 	}
 
 	private void showProductInEditMode(Product product) {

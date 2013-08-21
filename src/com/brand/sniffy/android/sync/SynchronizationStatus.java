@@ -1,4 +1,4 @@
-package com.brand.sniffy.android.service;
+package com.brand.sniffy.android.sync;
 
 public enum SynchronizationStatus {
 	STARTED, 

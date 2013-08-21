@@ -22,4 +22,7 @@
 	<string name="description_item_button_label">Opis produktu</string>
 	<string name="show_description_menu_item">Pokaż opis</string>
 	<string name="show_components_menu_item">Pokaż składniki</string>
+	<string name="components_synchronization_message">Trwa synchronizacja informacji o składnikach produktów.</string>
+	<string name="search_product_title">Wyszukiwanie</string>
+	<string name="search_product_text">Szukam produktu, proszę o cierpliwość to może jeszcze chwile potrwać&#8230;</string>
 </resources>

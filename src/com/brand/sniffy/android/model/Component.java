@@ -15,7 +15,7 @@ public class Component {
 
 	private static final String NAME_FIELD = "name";
 
-	private static final String ID_FIELD = "id";
+	public static final String ID_FIELD = "id";
 
 	public Component(){
 		
@@ -27,10 +27,24 @@ public class Component {
 		equivalentNames = json.getString(EQUIVALENT_NAMES_FIELD);
 		rating = new ComponentRating(json.getInt(COMPONENT_RATING_ID_FIELD));  
 	}
+	
+
+	public Component(int id) {
+		this.id = id;
+	}
+
 
 	@DatabaseField(id = true)
 	private int id;
+	@DatabaseField(canBeNull = false)
+	private String name;
 
+	@DatabaseField
+	private String equivalentNames;
+	
+	@DatabaseField(foreign = true, foreignAutoCreate = false, foreignAutoRefresh = true)
+	private ComponentRating rating;
+	
 	public int getId() {
 		return id;
 	}
@@ -62,13 +76,4 @@ public class Component {
 	public void setRating(ComponentRating rating) {
 		this.rating = rating;
 	}
-
-	@DatabaseField(canBeNull = false)
-	private String name;
-
-	@DatabaseField
-	private String equivalentNames;
-	
-	@DatabaseField(foreign = true, foreignAutoCreate = false)
-	private ComponentRating rating;
 }

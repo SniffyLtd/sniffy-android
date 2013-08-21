@@ -29,6 +29,13 @@
             android:name="com.brand.sniffy.android.ProductDetailsActivity"
             android:label="@string/title_activity_product_details" >
         </activity>
+        
+        <receiver android:name="SynchronizationStatusBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="com.brand.sniffy.Synchronization" >
+                </action>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

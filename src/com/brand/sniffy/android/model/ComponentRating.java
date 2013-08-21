@@ -35,6 +35,22 @@ public class ComponentRating {
 	@DatabaseField(id = true)
 	private int id;
 	
+	/**
+     */
+	@DatabaseField
+    private String title;
+
+    /**
+     */
+	@DatabaseField
+    private String description;
+
+    /**
+     */
+	@DatabaseField
+    private String color;
+	
+	
     public int getId() {
 		return id;
 	}
@@ -67,19 +83,4 @@ public class ComponentRating {
 		this.color = color;
 	}
 
-	/**
-     */
-	@DatabaseField
-    private String title;
-
-    /**
-     */
-	@DatabaseField
-    private String description;
-
-    /**
-     */
-	@DatabaseField
-    private String color;
-	
 }

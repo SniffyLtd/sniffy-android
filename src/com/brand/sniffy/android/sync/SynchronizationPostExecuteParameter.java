@@ -1,4 +1,5 @@
-package com.brand.sniffy.android.service;
+package com.brand.sniffy.android.sync;
+
 
 class SynchronizationPostExecuteParameter {
 

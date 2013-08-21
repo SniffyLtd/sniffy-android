@@ -1,15 +1,14 @@
 package com.brand.sniffy.android.service;
 
 import java.sql.SQLException;
-import android.widget.Toast;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.brand.sniffy.android.BackOfficeConstants;
 import com.brand.sniffy.android.model.Database;
-import com.brand.sniffy.android.model.Product;
-import com.brand.sniffy.android.model.Scanning;
 import com.brand.sniffy.android.model.SynchronizationHistory;
+import com.brand.sniffy.android.sync.ConnectionManager;
+import com.brand.sniffy.android.sync.SynchronizationPerformer;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import android.content.Context;
@@ -17,23 +16,17 @@ import android.util.Log;
 
 public class SynchronizationService {
 	
-	private static final String BO_URL = "http://192.168.1.205:8080/sniffy-bo-web";
-	
-	private static final String SYNCHRONIZATION_SERVICE = "/mobile/sync";
-
-	private static final String INIT_SYNC_METHOD = "/init";
-	
-	private static final Long TWENTY_FOUR_HOURS = 1000L * 60L ;//* 60L * 24L;
+	private static final Long TWENTY_FOUR_HOURS = 1L;// 900000L;
+												 
 	
 	private Database database;
 	
 	private ConnectionManager connectionManager;
 	
 	private SynchronizationPerformer synchronizationPerformer;
-	private Context context;
+	
 	
 	public SynchronizationService(Context context){
-		context = context;
 		database = new Database(context);
 		connectionManager = new ConnectionManager(context);
 		synchronizationPerformer = new SynchronizationPerformer(context);
@@ -57,13 +50,13 @@ public class SynchronizationService {
 
 	private String prepareSynchronizationRequestUrl(Long lastSynchronizationTime) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(BO_URL);
-		builder.append(SYNCHRONIZATION_SERVICE);
+		builder.append(BackOfficeConstants.BO_URL);
+		builder.append(BackOfficeConstants.SYNCHRONIZATION_SERVICE);
 		if(lastSynchronizationTime != null){
 			builder.append("/").append(lastSynchronizationTime);
 		}
 		else{
-			builder.append(INIT_SYNC_METHOD);
+			builder.append(BackOfficeConstants.INIT_SYNC_METHOD);
 		}
 		return builder.toString();
 	}
@@ -72,7 +65,7 @@ public class SynchronizationService {
 		QueryBuilder<SynchronizationHistory, ?> qb = database.getRuntimeExceptionDao(SynchronizationHistory.class).queryBuilder();
 		try {
 			qb.where().eq(SynchronizationHistory.STATUS_FIELD, SynchronizationHistory.SUCCESS_STATUS);
-			List<SynchronizationHistory> syncHistory = qb.orderBy(SynchronizationHistory.SYNCHRONIZATION_TIME_FIELD, true).limit(1L).query();
+			List<SynchronizationHistory> syncHistory = qb.orderBy(SynchronizationHistory.SYNCHRONIZATION_TIME_FIELD, false).limit(1L).query();
 			if(syncHistory.isEmpty()){
 				return null;
 			}

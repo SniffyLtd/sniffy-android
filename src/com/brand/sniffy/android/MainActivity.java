@@ -11,7 +11,9 @@ import com.brand.sniffy.android.service.SynchronizationService;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -19,6 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.method.HideReturnsTransformationMethod;
 import android.view.Menu;
 import android.view.WindowManager;
 
@@ -41,6 +44,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private ScanningService scanningService;
     
     private SynchronizationService synchronizationService;
+    
+    private ProgressDialog progressDialog;
     
     private ProductService getProductService(){
     	if(productService == null){
@@ -211,13 +216,55 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 	}
 
 	@Override
-	public void search(String baredoce) {
-		Product product = getProductService().findProduct(baredoce);
-		if(product == null){
-			product = getProductService().createLocalProduct(baredoce);
-		}
-		getScanningService().create(baredoce, product);
-		openProductDetails(product);
+	public void search(String barcode) {
+		AsyncTask<String, Void, Product> task = new AsyncTask<String, Void, Product>(){
+
+			@Override
+			protected void onPreExecute() {
+				//showProgressBar();
+			};
+			
+			@Override
+			protected Product doInBackground(String... arguments) {
+				if(arguments.length == 0){
+					throw new IllegalArgumentException("Barcode argument required.");
+				}
+				
+				String barcode = arguments[0];
+				Product product = getProductService().findProduct(barcode);
+				if(product == null){
+					product = getProductService().createLocalProduct(barcode);
+				}
+
+				getScanningService().create(barcode, product);
+				return product;
+			}
+			
+			@Override
+			protected void onPostExecute(Product result) {
+			//	hideProgressBar();
+				openProductDetails(result);
+				super.onPostExecute(result);
+			}
+			
+		};
+
+		task.execute(barcode);
+
+	}
+
+	protected void hideProgressBar() {
+		 if (progressDialog != null) {
+             progressDialog.dismiss();
+		 }
+	}
+
+	private void showProgressBar() {
+		progressDialog = ProgressDialog.show(this,
+				this.getString(R.string.search_product_title),
+				this.getString(R.string.search_product_text),
+                true);
+		
 	}
 
 	@Override

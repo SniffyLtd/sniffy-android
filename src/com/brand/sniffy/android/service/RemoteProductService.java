@@ -2,50 +2,58 @@ package com.brand.sniffy.android.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
+import org.json.JSONException;
+
+import android.content.Context;
+import android.util.Log;
+
+import com.brand.sniffy.android.BackOfficeConstants;
 import com.brand.sniffy.android.model.Product;
+import com.brand.sniffy.android.sync.ConnectionManager;
+import com.brand.sniffy.android.sync.ConnectionResponse;
 
 public class RemoteProductService {
 	
+	private static final String PRODUCT_FIELD = "product";
+
+
 	List<Product> testProducts = new ArrayList<Product>();
 	
-	public RemoteProductService(){
-		Product product1 = new Product();
-		product1.setId(1);
-		product1.setLocal(false);
-		product1.setName("¯ywiec zdrój woda mineralna 1.5l, œrednio gazowana.");
-		product1.setDescription("Woda Ÿródlana wydobywana z ujêcia S2 w Rzeniszowie. Producent ¯ywiec Zdrój. Woda Ÿródlana œrednio nasycona dwutlenkiem wêgla.");
-		testProducts.add(product1);
-		Product product2 = new Product();
-		product2.setId(1);
-		product2.setLocal(false);
-		product2.setName("BoboVita 100% owoców Mus z bananów brzoskwiñ i truskawek po 9 miesi¹cu 4 x 100 g.");
-		product2.setDescription("¿ywienie z myœl¹ o przysz³oœci, zawiera naturalnie wystêpuj¹ce cukry z owoców, bez sztucznych barwników, dodatków aromatycznych i konserwantów - zgodnie z przepisami prawa, 100% owoców, zawiera tylko naturalne cukry z owoców, produkt bezglutenowy, nie zawiera bia³ka mleka krowiego i laktozy.");
-		testProducts.add(product2);
-		Product product3 = new Product();
-		product3.setId(1);
-		product3.setLocal(false);
-		product3.setName("Dr. Oetker Galaretka o smaku agrestowym 77 g");
-		product3.setDescription("Galaretka o smaku agrestowym. Pyszne, owocowe galaretki Dr. Oetkera to najbardziej elegancki deser. S¹ wspania³e jako dekoracja lodów, ciast z owocami i na zimno. Ich weso³e kolory, owocowy aromat oraz orzeŸwiaj¹cy smak sprawiaj¹, ¿e s¹ wspania³ym pomys³em na letnie przyjêcia i dzieciêce bale. Je¿eli masz ochotê na coœ oryginalnego i nowego - Dr. Oetker poleca specjalne przepisy na galaretkowe drinki i inne szalone desery.");
-		testProducts.add(product3);
-		Product product4 = new Product();
-		product4.setId(1);
-		product4.setLocal(false);
-		product4.setName("Milka Lila Stars Snax Hazelnuts and Crispy Orzechy laskowe w czekoladzie z dodatkiem chrupek 60 g");
-		product4.setDescription("Orzechy laskowe (16%) w mlecznej czekoladzie z mleka alpejskiego i bia³ej czekoladzie z dodatkiem chrupek pszenno-ry¿owych (4,5%).");
-		testProducts.add(product4);
+	private ConnectionManager connectionManager;
+	
+	public RemoteProductService(Context context){
+		connectionManager = new ConnectionManager(context);
 	}
 
-	public Product findProduct(String barecode) {
-		Random rand = new Random();
-		int index = rand.nextInt(4);
-		if(index == 4){
-			return null;
+	public SearchProductResult findProduct(String barcode) {
+		
+		if(!connectionManager.isOnline()){  
+			return new SearchProductResult(SearchProductResult.ResultStatus.OFFLINE, null);
 		}
-		Product product = testProducts.get(index);
-		product.setBarecode(barecode);
-		return product;
+		
+		StringBuilder searchUrlBuilder = new StringBuilder(BackOfficeConstants.BO_URL);
+		searchUrlBuilder.append(BackOfficeConstants.PRODUCT_SERVICE);
+		searchUrlBuilder.append(String.format(BackOfficeConstants.FIND_BY_BARCODE_METHOD, barcode));
+		
+		Log.d(this.getClass().getName(), "Request url is: " +searchUrlBuilder.toString());
+		
+		ConnectionResponse response = connectionManager.doGet(searchUrlBuilder.toString());
+		if(ConnectionResponse.OK_STATUS.equals(response.getStatus())){
+			try {
+				Product product = new Product(response.getResult().getJSONObject(PRODUCT_FIELD));
+				return new SearchProductResult(SearchProductResult.ResultStatus.OK, product);
+			} catch (JSONException e) {
+				return new SearchProductResult(SearchProductResult.ResultStatus.INVALID_RESULT, null);
+			}
+		}
+		else if(ConnectionResponse.NOT_FOUND_STATUS.equals(response.getStatus())){
+			return new SearchProductResult(SearchProductResult.ResultStatus.NOT_FOUND, null);
+		}
+		else{
+			Log.e(this.getClass().getName(), response.getReason().toString());
+			return new SearchProductResult(SearchProductResult.ResultStatus.SERVER_ERROR, null);
+		}
 	}
 
 }

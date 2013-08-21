@@ -1,7 +1,7 @@
-package com.brand.sniffy.android.service;
+package com.brand.sniffy.android.sync;
 
+import java.sql.SQLException;
 import java.util.Date;
-import android.widget.Toast;
 
 
 import android.os.AsyncTask;
@@ -15,6 +15,10 @@ import org.json.JSONException;
 
 import com.brand.sniffy.android.model.Database;
 import com.brand.sniffy.android.model.SynchronizationHistory;
+import com.brand.sniffy.android.service.CategoryService;
+import com.brand.sniffy.android.service.ComponentRatingService;
+import com.brand.sniffy.android.service.ComponentsService;
+import com.brand.sniffy.android.service.CountryService;
 
 public class SynchronizationPerformer extends AsyncTask<String, SynchronizationStatus, SynchronizationPostExecuteParameter> {
 	// TODO: add logs 
@@ -97,6 +101,10 @@ public class SynchronizationPerformer extends AsyncTask<String, SynchronizationS
 				 publishProgress(SynchronizationStatus.APLAYING_SYNC_DATA_ERROR);
 				 return new SynchronizationPostExecuteParameter(SynchronizationStatus.APLAYING_SYNC_DATA_ERROR);
 			 }
+			 catch(SQLException e){
+				 publishProgress(SynchronizationStatus.APLAYING_SYNC_DATA_ERROR);
+				 return new SynchronizationPostExecuteParameter(SynchronizationStatus.APLAYING_SYNC_DATA_ERROR);
+			 }
 		 }
 		 else{
 			 Log.e(this.getClass().getName(), String.format("Synchronization finished with error: %s- %s", response.getStatus(), response.getReason().toString()));
@@ -110,8 +118,6 @@ public class SynchronizationPerformer extends AsyncTask<String, SynchronizationS
 		 broadcastIntent.setAction(SYNCHRONIZATION_STATUS_BROADCAST);
 		 broadcastIntent.putExtra("status", status[0].toString());
          context.sendBroadcast(broadcastIntent);
-         
-         Toast.makeText(context, status[0].toString(), Toast.LENGTH_SHORT).show();
      }
 
      protected void onPostExecute(SynchronizationPostExecuteParameter result) {

@@ -2,8 +2,10 @@ package com.brand.sniffy.android.service;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.brand.sniffy.android.model.Product;
+import com.brand.sniffy.android.service.SearchProductResult.ResultStatus;
 
 public class ProductService {
 	
@@ -13,42 +15,65 @@ public class ProductService {
 		this.context = context;
 	}
 
-	private LocalProductService localProductFinder;
+	private LocalProductService localProductService;
 	
-	private RemoteProductService remoteProductFinder;
+	private RemoteProductService remoteProductService;
 	
 	public Product findProduct(String barcode) {
 		
-		Product product = getLocalProductFinder().findProduct(barcode);
+		Product product = getLocalProductService().findProduct(barcode);
 		if(product == null || product.isLocal()){
 			Log.i(this.getClass().getName(), "Product not present in local storage. Trying to search online.");
-			Product remoteProduct = getRemoteProductFinder().findProduct(barcode);
-			if(remoteProduct != null){
-				product = remoteProduct;
-				getLocalProductFinder().cache(product);
+			SearchProductResult result = getRemoteProductService().findProduct(barcode);
+			if(result.getStatus() == ResultStatus.OK){
+				product = result.getResult();
+				getLocalProductService().cache(product);
+			}
+			else{
+				String errorMessage = null;
+				switch(result.getStatus()){
+				case INVALID_RESULT:
+					errorMessage = "Data returned from back office is not valid.";
+					break;
+				case OFFLINE:
+					errorMessage = "Don't have internet connection.";
+					break;
+				case SERVER_ERROR:
+					errorMessage = "Back office service error.";
+					break;
+				case NOT_FOUND:
+
+					errorMessage = "Product not found.";
+						//Toast.makeText(context, "not found",Toast.LENGTH_SHORT).show();
+				default:
+					break;
+				
+				}
+				//Toast.makeText(context, errorMessage,Toast.LENGTH_SHORT).show();
+				Log.e(this.getClass().getName(), errorMessage);
 			}
 		}
 		return product;
 	}
 
-	public LocalProductService getLocalProductFinder() {
-		if(localProductFinder == null){
-			localProductFinder = new LocalProductService(context);
+	public LocalProductService getLocalProductService() {
+		if(localProductService == null){
+			localProductService = new LocalProductService(context);
 		}
 		
-		return localProductFinder;
+		return localProductService;
 	}
 
-	public RemoteProductService getRemoteProductFinder() {
-		if(remoteProductFinder == null){
-			remoteProductFinder = new RemoteProductService();
+	public RemoteProductService getRemoteProductService() {
+		if(remoteProductService == null){
+			remoteProductService = new RemoteProductService(context);
 		}
 		
-		return remoteProductFinder;
+		return remoteProductService;
 	}
 
 	public Product createLocalProduct(String baredoce) {
-		return getLocalProductFinder().createProduct(baredoce);
+		return getLocalProductService().createProduct(baredoce);
 	}
 
 }

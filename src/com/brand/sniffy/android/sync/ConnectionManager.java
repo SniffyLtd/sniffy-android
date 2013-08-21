@@ -1,4 +1,4 @@
-package com.brand.sniffy.android.service;
+package com.brand.sniffy.android.sync;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class ConnectionManager {
-
 
 	private Context context;
 	
@@ -64,6 +63,9 @@ public class ConnectionManager {
 		        } catch(JSONException e){
 		        	return ConnectionResponse.createOtherErrorResponse(statusLine.getReasonPhrase());
 		        }
+		    }
+		    else if(statusLine.getStatusCode() == HttpStatus.SC_NOT_FOUND){
+		    	return ConnectionResponse.createNotFountErrorResponse();
 		    }
 		    else{
 		    	return ConnectionResponse.createOtherErrorResponse(statusLine.getReasonPhrase());

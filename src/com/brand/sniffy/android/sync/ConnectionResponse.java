@@ -1,4 +1,4 @@
-package com.brand.sniffy.android.service;
+package com.brand.sniffy.android.sync;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -6,14 +6,16 @@ import org.json.JSONException;
 public class ConnectionResponse {
 
 	public static final String OK_STATUS = "ok";
+	
+	public static final String NOT_FOUND_STATUS = "notFound";
 
 	private static final String SERVER_ERROR = "serverError";
 
-	private static final String CONNECTION_ERROR = null;
+	private static final String CONNECTION_ERROR = "connectionError";
 
-	private static final String PARSE_RESULT_ERROR = null;
+	private static final String PARSE_RESULT_ERROR = "parseResultError";
 
-	private static final String OTHER_HTTP_ERROR_ERROR = null;
+	private static final String OTHER_HTTP_ERROR_ERROR = "Other";
 	
 	private String status;
 
@@ -87,6 +89,13 @@ public class ConnectionResponse {
 		catch (JSONException e){			
 			return null;	
 		}
+	}
+
+	public static ConnectionResponse createNotFountErrorResponse() {
+		ConnectionResponse response = new ConnectionResponse();
+		response.status = NOT_FOUND_STATUS;
+		response.reason = prepareReason("Request parameter not found.");
+		return response;
 	}
 	
 }

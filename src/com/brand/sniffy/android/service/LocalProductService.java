@@ -39,7 +39,7 @@ public class LocalProductService {
 
 	public Product createProduct(String barecode) {
 		Product product = new Product();
-		product.setBarecode(barecode);
+		product.setBarcode(barecode);
 		product.setId(random.nextInt(Integer.MAX_VALUE-100000)+100000);
 		product.setLocal(true);
 		database.getRuntimeExceptionDao(Product.class).create(product);
