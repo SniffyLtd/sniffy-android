@@ -221,7 +221,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 			@Override
 			protected void onPreExecute() {
-				//showProgressBar();
+				showProgressBar();
 			};
 			
 			@Override
@@ -242,7 +242,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 			
 			@Override
 			protected void onPostExecute(Product result) {
-			//	hideProgressBar();
+				hideProgressBar();
 				openProductDetails(result);
 				super.onPostExecute(result);
 			}
