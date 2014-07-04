@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dip">
+ 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Nazwa użytkownika"
+        android:singleLine="true"
+        android:layout_marginBottom="5dip"/>
+     
+    <EditText android:uuid="@+uuid/txtUsernameLoginFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"/>
+     
+    <!-- Password Label -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Hasło"
+        android:layout_marginBottom="5dip"/>
+     
+    <!-- Password input text -->
+    <EditText android:uuid="@+uuid/txtPasswordLoginFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dip"
+        android:password="true"
+        android:singleLine="true"/>
+     
+    <!-- Login button -->
+    <Button android:uuid="@+uuid/btnLoginLoginFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Loguj"/>
+	 <View
+	    android:layout_width="fill_parent"
+	    android:layout_height="1dp"
+	    android:background="@android:color/darker_gray"/>
+	 
+    <Button android:uuid="@+uuid/btnRegisterLoginFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Zarejestruj"/>
+</LinearLayout>

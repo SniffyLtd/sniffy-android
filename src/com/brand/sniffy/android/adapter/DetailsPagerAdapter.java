@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.brand.sniffy.android.ComponentsFragment;
-import com.brand.sniffy.android.ProductDescriptionFragment;
+import com.brand.sniffy.android.fragment.ComponentsFragment;
+import com.brand.sniffy.android.fragment.ProductDescriptionFragment;
 
 public class DetailsPagerAdapter extends FragmentStatePagerAdapter{
 

@@ -5,7 +5,7 @@
     android:padding="10dp">
 
     <!-- ImageView
-        android:id="@+id/menu_item_icon"
+        android:uuid="@+uuid/menu_item_icon"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentLeft="true"
@@ -13,7 +13,7 @@
         android:contentDescription="@string/menu_item_icon" /-->
 
     <TextView
-        android:id="@+id/menu_item_header"
+        android:uuid="@+uuid/menu_item_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

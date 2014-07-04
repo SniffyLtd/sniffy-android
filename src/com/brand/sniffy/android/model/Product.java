@@ -31,6 +31,8 @@ public class Product implements Serializable {
 	
 	private static final String COMPONENTS_JSON_FIELD = "components";
 
+	private static final String CATEGORY_FIELD = "category";
+
 	@DatabaseField(id = true, canBeNull = false)
 	private int id;
 	
@@ -49,6 +51,9 @@ public class Product implements Serializable {
 	@DatabaseField(foreign = true, foreignAutoCreate = false, foreignAutoRefresh = true)
 	private Producer producer;
 	
+	@DatabaseField(foreign = true, foreignAutoCreate = false, foreignAutoRefresh = true)
+	private Category category;
+	
 	private transient Set<Component> components = new HashSet<Component>();
 	
 	public Product(){
@@ -59,11 +64,20 @@ public class Product implements Serializable {
 		id = json.getInt(ID_FIELD);
 		name = json.getString(NAME_FIELD);
 		barcode = json.getString(BARECODE_FIELD);
-		description = json.getString(DESCRIPTION_FIELD);
-		producer = new Producer(json.getJSONObject(PRODUCER_FIELD));
-		JSONArray componetIds = json.getJSONArray(COMPONENTS_JSON_FIELD);
-		for(int i=0; i < componetIds.length(); ++i){
-			components.add(new Component(componetIds.getInt(i)));
+		if(json.has(DESCRIPTION_FIELD)){
+			description = json.getString(DESCRIPTION_FIELD);
+		}
+		if(json.has(CATEGORY_FIELD)){
+			category = new Category(json.getJSONObject(CATEGORY_FIELD));
+		}
+		if(json.has(PRODUCER_FIELD)){
+			producer = new Producer(json.getJSONObject(PRODUCER_FIELD));
+		}
+		if(json.has(COMPONENTS_JSON_FIELD)){
+			JSONArray componetIds = json.getJSONArray(COMPONENTS_JSON_FIELD);
+			for(int i=0; i < componetIds.length(); ++i){
+				components.add(new Component(componetIds.getInt(i)));
+			}
 		}
 	}
 
@@ -121,6 +135,14 @@ public class Product implements Serializable {
 
 	public void setComponents(Set<Component> components) {
 		this.components = components;
+	}
+
+	public Category getCategory() {
+		return category;
+	}
+
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	
 }

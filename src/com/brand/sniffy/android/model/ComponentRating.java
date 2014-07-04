@@ -9,7 +9,7 @@ import org.json.JSONException;
 @DatabaseTable
 public class ComponentRating {
 	
-	private static final String ID_FIELD = "id";
+	public static final String ID_FIELD = "id";
 
 	private static final String TITLE_FIELD = "title";
 

@@ -1,7 +1,6 @@
-package com.brand.sniffy.android;
+package com.brand.sniffy.android.fragment;
 
 import com.brand.sniffy.android.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;

@@ -1,5 +1,6 @@
 package com.brand.sniffy.android.command;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 public interface Command {
@@ -8,5 +9,5 @@ public interface Command {
 	
 	String getHeader();
 	
-	boolean execute(Object param);
+	boolean execute(Context context);
 }

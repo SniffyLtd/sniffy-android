@@ -2,6 +2,7 @@ package com.brand.sniffy.android.model;
 
 import java.sql.SQLException;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -17,8 +18,8 @@ public class Database extends OrmLiteSqliteOpenHelper{
 	
 	private static int DATABASE_VERSION = 1;
 
-	public Database(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	public Database(Context context, Account account) {
+		super(context, DATABASE_NAME + "_"+ account.name, null, DATABASE_VERSION);
 	}
 
 	@Override

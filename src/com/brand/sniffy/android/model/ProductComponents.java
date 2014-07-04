@@ -5,6 +5,12 @@ import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable
 public class ProductComponents {
+	
+	
+
+	public static final String COMPONENT_FIELD = "component_id";
+
+	public static final String PRODUCT_FIELD = "product_id";
 
 	@DatabaseField(foreign = true, foreignAutoCreate = false, foreignAutoRefresh = true)
 	private Product product;

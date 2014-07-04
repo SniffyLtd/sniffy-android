@@ -3,11 +3,8 @@ package com.brand.sniffy.android.service;
 
 import java.sql.SQLException;
 import java.util.List;
-
+import android.accounts.Account;
 import android.content.Context;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import com.brand.sniffy.android.model.Category;
 import com.brand.sniffy.android.model.Database;
 
@@ -16,25 +13,12 @@ public class CategoryService {
 
 	private Database database;
 	
-	public CategoryService(Context context){
-		database = new Database(context);
-	}
 	
-	public void applyChanges(JSONArray categories) throws SQLException, JSONException{
-		for(int i =0 ; i< categories.length(); ++i){
-			Category category =  new Category(categories.getJSONObject(i));
-			
-			Category existingCategory = getCategory(category.getId());
-			if(existingCategory == null){
-				database.getDao(Category.class).create(category);
-			}
-			else{
-				database.getDao(Category.class).update(category);
-			}
-		}
+	public CategoryService(Context context, Account account){
+		database = new Database(context, account);
 	}
 
-	private Category getCategory(int id) {
+	public Category getCategory(int id) {
 		try{
 			List<Category> result  = database.getRuntimeExceptionDao(Category.class)
 					.queryBuilder().where().eq(Category.ID_FIELD, id).query();
@@ -47,5 +31,26 @@ public class CategoryService {
 		}catch(SQLException e){
 			return null;
 		}
+	}
+
+	public Category save(Category category) {
+		Category existingCategory = getCategory(category.getId());
+		if(existingCategory == null){
+			create(category);
+		}
+		else{
+			update(category);
+		}
+		
+		return category;
+	}
+
+	private void update(Category category) {
+		database.getRuntimeExceptionDao(Category.class).update(category);
+	}
+
+	private Category create(Category category) {
+		database.getRuntimeExceptionDao(Category.class).create(category);
+		return category;
 	}
 }

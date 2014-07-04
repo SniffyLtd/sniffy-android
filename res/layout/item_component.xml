@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
     
 	<RelativeLayout 
-	    android:id="@+id/component_rating_color"
+	    android:uuid="@+uuid/component_rating_color"
 	    android:layout_height="30dp"
 	    android:layout_width="30dp"
 	    android:background="@android:color/holo_orange_dark"
@@ -12,13 +12,13 @@
 	    android:layout_margin="5dp"></RelativeLayout>
 
 	<TextView
-	    android:id="@+id/component_name_label"
+	    android:uuid="@+uuid/component_name_label"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
-	    android:layout_alignBottom="@+id/component_rating_color"
+	    android:layout_alignBottom="@+uuid/component_rating_color"
 	    android:layout_alignParentRight="true"
-	    android:layout_alignTop="@+id/component_rating_color"
-	    android:layout_toRightOf="@+id/component_rating_color"
+	    android:layout_alignTop="@+uuid/component_rating_color"
+	    android:layout_toRightOf="@+uuid/component_rating_color"
 	    android:gravity="center_vertical" />
 
 </RelativeLayout>

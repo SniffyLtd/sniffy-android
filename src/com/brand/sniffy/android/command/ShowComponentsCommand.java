@@ -1,50 +1,49 @@
 package com.brand.sniffy.android.command;
 
-import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.ProductDetailsActivity;
-import com.brand.sniffy.android.adapter.DetailsPagerAdapter;
+import com.brand.sniffy.android.model.Product;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 
 public class ShowComponentsCommand implements Command{
 
-	private final Handler executor = new Handler();
+	private Drawable icon;
 	
-	private Context contex;
+	private String header;
 
-	public ShowComponentsCommand(Context contex){
-		this.contex = contex;
+	public ShowComponentsCommand(Drawable icon, String header, Product product){
+		this.icon = icon;
+		this.header = header;
 	}
 	
 	@Override
 	public Drawable getIcon() {
-		return contex.getResources().getDrawable(R.drawable.comment_icon);
+		return icon;
 	}
 
 	@Override
 	public String getHeader() {
-		return contex.getResources().getString(R.string.show_components_menu_item);
+		return header;
 	}
 
 	@Override
-	public boolean execute(Object param) {
-		if(param instanceof ProductDetailsActivity){
-			final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
+	public boolean execute(Context context) {
+		
+		//if(param instanceof ProductDetailsActivity){
+			/*final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
 			detailsActivity.hideAwsomeMenu();
 
 			Runnable runable = new Runnable() {
 				@Override
 				public void run() {
-					detailsActivity.showDetailsFragment(DetailsPagerAdapter.COMPONENTS_DETAILS);
+					//detailsActivity.showDetailsFragment(DetailsPagerAdapter.COMPONENTS_DETAILS);
 				}
 			};
-			executor.postDelayed(runable, 300);
-		}
-		else{
-			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
-		}
+			executor.postDelayed(runable, 300);*/
+		//}
+		//else{
+		//	throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
+		//}
 		return false;
 	}
 

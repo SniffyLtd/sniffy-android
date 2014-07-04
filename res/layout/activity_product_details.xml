@@ -5,26 +5,25 @@
     tools:context=".ProductDetailsActivity"
     android:background="@android:color/holo_blue_dark" >
 
-
 	<fragment 
-        class="com.brand.sniffy.android.ProductMenuFragment"
-	    android:id="@+id/fragment_product_menu"
+        class="com.brand.sniffy.android.fragment.ProductMenuFragment"
+	    android:uuid="@+uuid/fragment_product_menu"
         android:layout_height="match_parent"
         android:layout_width="250dp"
 	    android:translationX="-250dp"
         />
 	<RelativeLayout 
-	    android:id="@+id/product_details_frame"
+	    android:uuid="@+uuid/product_details_frame"
     	android:layout_width="match_parent"
     	android:layout_height="match_parent"
 	    android:background="@android:color/white">
 	        <LinearLayout 
-	            android:id="@+id/menu_bar"
+	            android:uuid="@+uuid/menu_bar"
 	            android:layout_width="fill_parent"
 	            android:layout_height="40dp"
 	            android:background="@android:color/holo_green_dark">
 	            <Button 
-	                android:id="@+id/expand_button"
+	                android:uuid="@+uuid/expand_button"
 	                android:layout_width="0dp"
 	                android:layout_height="match_parent"
 	                android:layout_weight="1"
@@ -43,69 +42,90 @@
 	        <ScrollView     
 	        	android:layout_height="fill_parent"
 	        	android:layout_width="fill_parent"
-	        	android:layout_below="@id/menu_bar"
+	        	android:layout_below="@uuid/menu_bar"
 	        	android:fillViewport="true">
 	            
 	        <RelativeLayout 
 	        	android:layout_height="fill_parent"
 	        	android:layout_width="fill_parent" >
 	            <TextView 
-	        		android:id="@+id/category_path_label"
+	        		android:uuid="@+uuid/category_path_label"
 	        		android:layout_height="wrap_content"
 	        		android:layout_width="fill_parent"/>
 
 	    <ImageView
-	        android:id="@+id/thumbnail"
+	        android:uuid="@+uuid/thumbnail"
 	        android:contentDescription="@string/product_thumbnail_description"
 	        android:layout_width="100dp"
 	        android:layout_height="100dp"
 	        android:layout_margin="5dp"
 	        android:layout_alignParentLeft="true"
-	        android:layout_below="@id/category_path_label"
+	        android:layout_below="@uuid/category_path_label"
 	        android:src="@drawable/food"
        		android:background="@android:color/darker_gray"/>
 
 	    <TextView
-	        android:id="@+id/product_name_label"
+	        android:uuid="@+uuid/product_name_label"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:maxLines="3"
-	        android:layout_alignTop="@+id/thumbnail"
-	        android:layout_toRightOf="@+id/thumbnail"
+	        android:layout_alignTop="@+uuid/thumbnail"
+	        android:layout_toRightOf="@+uuid/thumbnail"
 	        android:singleLine="false"
 	        android:textSize="17sp" />
 	    <TextView
-	        android:id="@+id/product_barecode_label_header"
+	        android:uuid="@+uuid/product_barecode_label_header"
 	        android:text="@string/barecode_label"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/thumbnail"
-	        android:layout_below="@id/product_name_label"
+	        android:layout_toRightOf="@+uuid/thumbnail"
+	        android:layout_below="@uuid/product_name_label"
 	        android:singleLine="true"
 	        android:layout_marginLeft="5dp"
 	        android:textSize="12sp" />
 	    <TextView
-	        android:id="@+id/product_barecode_label"
+	        android:uuid="@+uuid/product_barecode_label"
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_toRightOf="@+id/thumbnail"
-	        android:layout_below="@id/product_barecode_label_header"
+	        android:layout_toRightOf="@+uuid/thumbnail"
+	        android:layout_below="@uuid/product_barecode_label_header"
 	        android:singleLine="true"
 	        android:textSize="14sp" />
-	    <android.support.v4.view.ViewPager
+	    <!-- android.support.v4.view.ViewPager
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:layout_below="@id/thumbnail" 
-	        android:id="@+id/details_pager"/>
+	        android:layout_below="@uuid/thumbnail"
+	        android:uuid="@+uuid/details_pager"/-->
+	        <ViewFlipper 
+	           android:uuid="@+uuid/details_view_flipper"
+	           android:layout_width="fill_parent"
+	           android:layout_height="fill_parent"
+	           android:layout_below="@uuid/thumbnail" >
+	            <fragment 
+		        	class="com.brand.sniffy.android.fragment.ProductDescriptionFragment"
+			    	android:uuid="@+uuid/fragment_product_description"
+		        	android:layout_height="fill_parent"
+		        	android:layout_width="fill_parent"/>
+	            <fragment 
+		        	class="com.brand.sniffy.android.fragment.ComponentsFragment"
+			    	android:uuid="@+uuid/fragment_product_components"
+		        	android:layout_height="fill_parent"
+		        	android:layout_width="fill_parent"/>
+	            <fragment 
+		        	class="com.brand.sniffy.android.fragment.ProducerDetailsFragment"
+			    	android:uuid="@+uuid/fragment_producer_details"
+		        	android:layout_height="fill_parent"
+		        	android:layout_width="fill_parent"/>
+	        </ViewFlipper>
 	    
 	    <!-- LinearLayout 
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
-	        android:layout_below="@id/thumbnail"
+	        android:layout_below="@uuid/thumbnail"
 	        android:background="@color/blac"
 	        android:orientation="vertical">
 	        <Button 
-	            android:id="@+id/description_item_button"
+	            android:uuid="@+uuid/description_item_button"
 	            android:layout_height="40dp"
 	            android:layout_width="fill_parent"
 	            android:background="@android:color/holo_blue_dark"
@@ -113,18 +133,18 @@
 	            android:text="@string/description_item_button_label"
 	            android:gravity="left"/>
 	        <RelativeLayout 
-	            android:id="@+id/description_item_content"
+	            android:uuid="@+uuid/description_item_content"
 	            android:layout_height="0dp"
 	            android:layout_width="fill_parent"
 	            android:background="@android:color/white"
 	            android:layout_margin="1dp">
 	                <TextView
-	                    android:id="@+id/product_description_label" 
+	                    android:uuid="@+uuid/product_description_label"
 	                    android:layout_height="wrap_content"
 	                    android:layout_width="fill_parent"/>
 	        </RelativeLayout>
 	        <Button 
-	            android:id="@+id/components_item_button"
+	            android:uuid="@+uuid/components_item_button"
 	            android:layout_height="40dp"
 	            android:layout_width="fill_parent"
 	            android:background="@android:color/holo_blue_dark"
@@ -133,7 +153,7 @@
 	            android:gravity="left"/>
 
 	        <RelativeLayout 
-	            android:id="@+id/components_item_content"
+	            android:uuid="@+uuid/components_item_content"
 	            android:layout_height="fill_parent"
 	            android:layout_width="fill_parent"
 	            android:background="@android:color/white"

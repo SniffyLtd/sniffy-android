@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dip">
+ 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Nazwa użytkownika"
+        android:singleLine="true"
+        android:layout_marginBottom="5dip"/>
+     
+    <EditText android:uuid="@+uuid/txtUsernameRegisterFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dip"/>
+     
+    <!-- Password Label -->
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Hasło"
+        android:layout_marginBottom="5dip"/>
+     
+    <!-- Password input text -->
+    <EditText android:uuid="@+uuid/txtPasswordRegisterFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dip"
+        android:password="true"
+        android:singleLine="true"/>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Powtórz hasło"
+        android:layout_marginBottom="5dip"/>z
+    <EditText android:uuid="@+uuid/txtPasswordConfirmationRegisterFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dip"
+        android:password="true"
+        android:singleLine="true"/> 
+    
+    <!-- Login button -->
+    <Button android:uuid="@+uuid/btnRegisterRegisterFrgm"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Załóż konto"/>
+ 
+</LinearLayout>

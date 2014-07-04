@@ -4,9 +4,9 @@ package com.brand.sniffy.android.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import android.accounts.Account;
 import android.content.Context;
-import org.json.JSONArray;
-import org.json.JSONException;
+import android.util.Log;
 
 import com.brand.sniffy.android.model.Country;
 import com.brand.sniffy.android.model.Database;
@@ -15,25 +15,11 @@ public class CountryService {
 
 	private Database database;
 	
-	public CountryService(Context context){
-		database = new Database(context);
-	}
-	
-	public void applyChanges(JSONArray countries) throws SQLException, JSONException{
-		for(int i =0 ; i< countries.length(); ++i){
-			Country country =  new Country(countries.getJSONObject(i));
-			
-			Country existingCountry = getCountry(country.getId());
-			if(existingCountry == null){
-				database.getDao(Country.class).create(country);
-			}
-			else{
-				database.getDao(Country.class).update(country);
-			}
-		}
+	public CountryService(Context context, Account account){
+		database = new Database(context, account);
 	}
 
-	private Country getCountry(int id) {
+	private Country get(int id) {
 		try{
 			List<Country> result  = database.getDao(Country.class)
 					.queryBuilder().where().eq(Country.ID_FIELD, id).query();
@@ -44,7 +30,27 @@ public class CountryService {
 				return null;
 			}
 		}catch(SQLException e){
-			return null;
+			throw new IllegalStateException(e);
 		}
+	}
+
+	public void save(Country country) {
+		Country existingCountry = get(country.getId());
+		if(existingCountry != null){
+			update(country);
+		}
+		else{
+			create(country);
+		}
+	}
+
+	private void update(Country country) {
+		database.getRuntimeExceptionDao(Country.class).update(country);
+		Log.d(this.getClass().getName(), String.format("Country %d updated.", country.getId()));
+	}
+
+	private void create(Country country) {
+		database.getRuntimeExceptionDao(Country.class).create(country);	
+		Log.d(this.getClass().getName(), String.format("Country %d created.", country.getId()));
 	}
 }

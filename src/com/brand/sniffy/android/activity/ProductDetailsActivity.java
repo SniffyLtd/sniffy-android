@@ -1,21 +1,19 @@
-package com.brand.sniffy.android;
-
+package com.brand.sniffy.android.activity;
 import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.adapter.DetailsPagerAdapter;
+import com.brand.sniffy.android.command.ProductCommandFactory;
+import com.brand.sniffy.android.fragment.ProductMenuFragment;
 import com.brand.sniffy.android.model.Product;
-import com.brand.sniffy.android.utils.ExpandHorizontalAnimation;
-import com.brand.sniffy.android.utils.ZoomOutPageTransformer;
 
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 public class ProductDetailsActivity extends FragmentActivity {
 
@@ -33,16 +31,19 @@ public class ProductDetailsActivity extends FragmentActivity {
 	
 	private TextView barecodeLabel;
 	
-	private boolean menuOpened = false;
+	private ViewFlipper viewFlipper;
+
+	private ProductCommandFactory commandFactory;
+	//private ViewPager detailsPager;
 	
-	private ViewPager detailsPager;
-	
-	private DetailsPagerAdapter detailsPagerAdapter;
+	//private DetailsPagerAdapter detailsPagerAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_product_details);
+		
+		commandFactory = new ProductCommandFactory(this);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -57,16 +58,17 @@ public class ProductDetailsActivity extends FragmentActivity {
 		categoryLabel = (TextView)findViewById(R.id.category_path_label);
 		nameLabel = (TextView)findViewById(R.id.product_name_label);
 		barecodeLabel = (TextView)findViewById(R.id.product_barecode_label);
-		detailsPager = (ViewPager)findViewById(R.id.details_pager);
-		detailsPager.setPageTransformer(true, new ZoomOutPageTransformer());
-		detailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager());
+		viewFlipper = (ViewFlipper)findViewById(R.id.details_view_flipper);
+		//detailsPager = (ViewPager)findViewById(R.id.details_pager);
+		//detailsPager.setPageTransformer(true, new ZoomOutPageTransformer());
+		//detailsPagerAdapter = new DetailsPagerAdapter(getSupportFragmentManager());
 		
-		detailsPager.setAdapter(detailsPagerAdapter);
+		//detailsPager.setAdapter(detailsPagerAdapter);
 		
         Bundle extras = getIntent().getExtras();
-        if (extras.containsKey(PRODUCT_PARAMETER)) {
+        if (extras != null && extras.containsKey(PRODUCT_PARAMETER)) {
         	Product product =  (Product)extras.get(PRODUCT_PARAMETER);
-        	if(product.isLocal()){
+        	if(product == null){
         		showProductInEditMode(product);
         	}
         	else{
@@ -74,51 +76,42 @@ public class ProductDetailsActivity extends FragmentActivity {
         	}
         }
 		
-		
-		
 		menu = findViewById(R.id.fragment_product_menu);
 		productDetailsFrame = findViewById(R.id.product_details_frame);
-		
+		getMenuFragment().setMenuContainer(menu);
+		getMenuFragment().setPageContainer(productDetailsFrame);
 		expandButton.setOnClickListener(new OnClickListener() {
-			
 			@Override
 			public void onClick(View arg0) {
-				expandMenu();
+				ProductMenuFragment menuFragment = getMenuFragment();
+				menuFragment.exand();
 			}
 		});
 		
 	}
 
+	protected ProductMenuFragment getMenuFragment() {
+		return (ProductMenuFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_product_menu);
+	}
+
 	private void showProductInDisplayMode(Product product) {
-		categoryLabel.setText("Kategoria produktu >> Podkategoria produktu >> itd");
+		getMenuFragment().setCommands(commandFactory.createComandsForProduct(product));
+		if(product.getCategory() != null){
+			categoryLabel.setText(product.getCategory().getName());
+		}
 		nameLabel.setText(product.getName());
 		barecodeLabel.setText(product.getBarcode());
 	}
 
 	private void showProductInEditMode(Product product) {
 		// TODO Auto-generated method stub
-		
 	}
 
-	protected void expandMenu() {
-		ExpandHorizontalAnimation animation =  new ExpandHorizontalAnimation(menu, productDetailsFrame, 250, !menuOpened);
-		animation.setDuration(200);
-		menu.startAnimation(animation);
-		menuOpened= !menuOpened;
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.product_details, menu);
 		return true;
 	}
-
-	public void hideAwsomeMenu() {
-		expandMenu();
-		
-	}
-
-	public void showDetailsFragment(int item) {
-		detailsPager.setCurrentItem(item);
-	}
+	
 }

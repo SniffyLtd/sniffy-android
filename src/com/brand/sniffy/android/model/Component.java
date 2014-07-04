@@ -24,7 +24,10 @@ public class Component {
 	public Component(JSONObject json) throws JSONException{
 		id = json.getInt(ID_FIELD);
 		name = json.getString(NAME_FIELD);
-		equivalentNames = json.getString(EQUIVALENT_NAMES_FIELD);
+		if(json.has(EQUIVALENT_NAMES_FIELD)){
+			equivalentNames = json.getString(EQUIVALENT_NAMES_FIELD);
+		}
+		
 		rating = new ComponentRating(json.getInt(COMPONENT_RATING_ID_FIELD));  
 	}
 	

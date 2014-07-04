@@ -10,7 +10,8 @@ public class SearchProductResult {
 		NOT_FOUND,
 		OFFLINE, 
 		INVALID_RESULT, 
-		SERVER_ERROR
+		SERVER_ERROR, 
+		REJECTED
 	}
 	
 	private ResultStatus status;

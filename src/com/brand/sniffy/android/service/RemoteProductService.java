@@ -1,10 +1,17 @@
 package com.brand.sniffy.android.service;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.util.Log;
 
@@ -17,42 +24,70 @@ public class RemoteProductService {
 	
 	private static final String PRODUCT_FIELD = "product";
 
-
 	List<Product> testProducts = new ArrayList<Product>();
 	
 	private ConnectionManager connectionManager;
+
+	private Account account;
 	
-	public RemoteProductService(Context context){
-		connectionManager = new ConnectionManager(context);
+	private AccountManager accountManager;
+	
+	private AuthenticationService authenticationService;
+	
+	public RemoteProductService(Context context, Account account){
+		this.account = account;
+		this.accountManager = AccountManager.get(context);
+		this.connectionManager = new ConnectionManager(context);
+		this.authenticationService = new AuthenticationService(context);
 	}
 
-	public SearchProductResult findProduct(String barcode) {
+	public Product findProduct(String barcode) {
 		
-		if(!connectionManager.isOnline()){  
-			return new SearchProductResult(SearchProductResult.ResultStatus.OFFLINE, null);
+		if(!connectionManager.isOnline()){
+			throw new IllegalStateException("No internet connection.");
+		}
+		Map<String, String> headers = new HashMap<String, String>();
+		headers.put(ConnectionManager.USER_LOGIN_HEADER, account.name);
+		headers.put(ConnectionManager.USER_PASSWORD_HEADER, accountManager.getPassword(account));
+		headers.put(ConnectionManager.DEVICE_UUID_HEADER, authenticationService.getDeviceUUID());
+		
+		JSONObject request = new JSONObject();
+		try {
+			request.put("barcode", barcode);
+			request.put("requestDate", new Date().getTime());
+		} catch (JSONException e) {
+			throw new RuntimeException(e);
 		}
 		
 		StringBuilder searchUrlBuilder = new StringBuilder(BackOfficeConstants.BO_URL);
-		searchUrlBuilder.append(BackOfficeConstants.PRODUCT_SERVICE);
-		searchUrlBuilder.append(String.format(BackOfficeConstants.FIND_BY_BARCODE_METHOD, barcode));
+		searchUrlBuilder.append(BackOfficeConstants.SEARCH_SERVICE);
 		
-		Log.d(this.getClass().getName(), "Request url is: " +searchUrlBuilder.toString());
+		Log.d(this.getClass().getName(), "Request url is: " + searchUrlBuilder.toString());
 		
-		ConnectionResponse response = connectionManager.doGet(searchUrlBuilder.toString());
-		if(ConnectionResponse.OK_STATUS.equals(response.getStatus())){
+		ConnectionResponse response = connectionManager.doPost(searchUrlBuilder.toString(), request, headers);
+		if(HttpStatus.SC_OK == response.getStatus()){
 			try {
-				Product product = new Product(response.getResult().getJSONObject(PRODUCT_FIELD));
-				return new SearchProductResult(SearchProductResult.ResultStatus.OK, product);
+				JSONObject searchResult = response.getResult();
+				if(searchResult.has(PRODUCT_FIELD)){
+					Product product = new Product(searchResult.getJSONObject(PRODUCT_FIELD));
+					return product;
+				}
+				else{
+					return null;
+				}
 			} catch (JSONException e) {
-				return new SearchProductResult(SearchProductResult.ResultStatus.INVALID_RESULT, null);
+				throw new RuntimeException(e);
 			}
 		}
-		else if(ConnectionResponse.NOT_FOUND_STATUS.equals(response.getStatus())){
-			return new SearchProductResult(SearchProductResult.ResultStatus.NOT_FOUND, null);
+		else if(HttpStatus.SC_BAD_REQUEST == response.getStatus()){
+			try {
+				throw new IllegalArgumentException(response.getReason().getString("message"));
+			} catch (JSONException e) {
+				throw new IllegalArgumentException(e);
+			}
 		}
 		else{
-			Log.e(this.getClass().getName(), response.getReason().toString());
-			return new SearchProductResult(SearchProductResult.ResultStatus.SERVER_ERROR, null);
+			throw new RuntimeException("Error http status is:" + response.getStatus());
 		}
 	}
 

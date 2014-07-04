@@ -1,7 +1,7 @@
 package com.brand.sniffy.android.command;
 
 import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.ProductDetailsActivity;
+import com.brand.sniffy.android.activity.ProductDetailsActivity;
 import com.brand.sniffy.android.adapter.DetailsPagerAdapter;
 
 import android.content.Context;
@@ -29,9 +29,9 @@ public class ShowDescriptionCommand implements Command {
 	}
 
 	@Override
-	public boolean execute(Object param) {
-		if(param instanceof ProductDetailsActivity){
-			final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
+	public boolean execute(Context param) {
+		//if(param instanceof ProductDetailsActivity){
+		/*	final ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
 			detailsActivity.hideAwsomeMenu();
 			Runnable runable = new Runnable() {
 				@Override
@@ -39,11 +39,11 @@ public class ShowDescriptionCommand implements Command {
 					detailsActivity.showDetailsFragment(DetailsPagerAdapter.DESCRIPTION_DETAILS);
 				}
 			};
-			executor.postDelayed(runable, 300);
-		}
-		else{
-			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
-		}
+			executor.postDelayed(runable, 300);*/
+		//}
+		//else{
+			//throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
+		//}
 		return false;
 	}
 

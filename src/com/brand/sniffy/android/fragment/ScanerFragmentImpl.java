@@ -1,8 +1,10 @@
-package com.brand.sniffy.android;
+package com.brand.sniffy.android.fragment;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.API.MainActivityNavigation;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,9 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class ScanerFragment extends Fragment {
-	
-	private MainActivityNavigation activityNavigation;
+public class ScanerFragmentImpl extends Fragment implements ScanerFragment {
 	
 	public static final int SCAN_REQUEST_CODE = 0;
 
@@ -27,16 +27,7 @@ public class ScanerFragment extends Fragment {
 	
 	private EditText barecodeInput;
 	
-	@Override
-	public void onAttach(android.app.Activity activity) {
-		if(activity instanceof MainActivityNavigation){
-			activityNavigation = (MainActivityNavigation)activity;
-		}
-		else{
-			throw new IllegalArgumentException("activity is not instance of MainActivityNavigation interface.");
-		}
-		super.onAttach(activity);
-	};
+	private List<OnSearchListener> onSearchListeners = new ArrayList<ScanerFragment.OnSearchListener>();
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +51,9 @@ public class ScanerFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				String barecode = barecodeInput.getText().toString();
-				activityNavigation.search(barecode);
+				for(OnSearchListener listener : onSearchListeners){
+					listener.onSearch(barecode, ScanerFragmentImpl.this);
+				}
 			}
 		});
         return rootView;
@@ -73,5 +66,18 @@ public class ScanerFragment extends Fragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void addOnSearchListner(OnSearchListener onSearchListener) {
+		onSearchListeners.add(onSearchListener);
+	}
+
+	@Override
+	public void removeOnSearchListener(OnSearchListener onSearchListener) {
+		int index = onSearchListeners.indexOf(onSearchListener);
+		if(index > -1){
+			onSearchListeners.remove(index);
+		}
 	}
 }

@@ -16,7 +16,7 @@ public class Producer implements Serializable {
 	 */
 	private static final long serialVersionUID = -5536747258299170489L;
 
-	private static final String ID_FIELD = "id";
+	public static final String ID_FIELD = "id";
 
 	private static final String NAME_FIELD = "name";
 
@@ -42,8 +42,12 @@ public class Producer implements Serializable {
 		phone = json.getString(PHONE_FIELD);
 		fax = json.getString(FAX_FIELD);
 		email = json.getString(EMAIL_FIELD);
-		country = new Country(json.getInt(COUNTRY_ID_FIELD));
-		code = json.getString(CODE_FIELD);
+		if(json.has(COUNTRY_ID_FIELD)){
+			country = new Country(json.getJSONObject(COUNTRY_ID_FIELD));
+		}
+		if(json.has(CODE_FIELD)){
+			code = json.getString(CODE_FIELD);
+		}
 		contactPerson = json.getString(CONTACT_PERSON_FIELD);
 	}
 
@@ -70,4 +74,70 @@ public class Producer implements Serializable {
 
 	@DatabaseField
 	private String contactPerson;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getFax() {
+		return fax;
+	}
+
+	public void setFax(String fax) {
+		this.fax = fax;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getContactPerson() {
+		return contactPerson;
+	}
+
+	public void setContactPerson(String contactPerson) {
+		this.contactPerson = contactPerson;
+	}
+	
+	
 }

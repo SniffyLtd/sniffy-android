@@ -2,7 +2,7 @@ package com.brand.sniffy.android.command;
 
 
 import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.ProductDetailsActivity;
+import com.brand.sniffy.android.activity.ProductDetailsActivity;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -26,14 +26,14 @@ public class ReportCommand implements Command{
 	}
 
 	@Override
-	public boolean execute(Object param) {
-		if(param instanceof ProductDetailsActivity){
-			ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
-			detailsActivity.hideAwsomeMenu();
-		}
-		else{
-			throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
-		}
+	public boolean execute(Context context) {
+		//if(param instanceof ProductDetailsActivity){
+		//	ProductDetailsActivity detailsActivity = (ProductDetailsActivity)param;
+			//detailsActivity.hideAwsomeMenu();
+		//}
+		//else{
+		//	throw new ClassCastException("Param shoulf be instance of ProductDetailsActivity.");
+		//}
 		return false;
 	}
 

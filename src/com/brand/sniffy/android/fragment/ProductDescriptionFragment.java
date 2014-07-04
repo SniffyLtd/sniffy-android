@@ -1,6 +1,6 @@
-package com.brand.sniffy.android;
-
+package com.brand.sniffy.android.fragment;
 import com.brand.sniffy.android.R;
+import com.brand.sniffy.android.activity.ProductDetailsActivity;
 import com.brand.sniffy.android.model.Product;
 
 import android.app.Activity;
@@ -37,10 +37,9 @@ public class ProductDescriptionFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		Bundle extras = activity.getIntent().getExtras();
-        if (extras.containsKey(ProductDetailsActivity.PRODUCT_PARAMETER)) {
-        	product =  (Product)extras.get(ProductDetailsActivity.PRODUCT_PARAMETER);
-
-        }
+		//Bundle extras = activity.getIntent().getExtras();
+        //if (extras.containsKey(ProductDetailsActivity.PRODUCT_PARAMETER)) {
+//        	product =  (Product)extras.get(ProductDetailsActivity.PRODUCT_PARAMETER);
+  //      }
 	}
 }

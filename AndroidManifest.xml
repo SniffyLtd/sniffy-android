@@ -8,34 +8,66 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="14" />
 
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+	<uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+	<uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 	
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
-            android:name="com.brand.sniffy.android.MainActivity"
+            android:name="com.brand.sniffy.android.activity.SplashScreenActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.brand.sniffy.android.ProductDetailsActivity"
-            android:label="@string/title_activity_product_details" >
+            android:name="com.brand.sniffy.android.activity.LoginActivity"
+            android:label="@string/app_name" >
         </activity>
-        
-        <receiver android:name="SynchronizationStatusBroadcastReceiver" >
+        <activity
+            android:name="com.brand.sniffy.android.activity.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.brand.sniffy.android.activity.ProductDetailsActivity"
+            android:label="@string/app_name" >
+        </activity>
+
+        <provider
+	        android:name="com.brand.sniffy.android.StubProvider"
+	        android:authorities="com.brand.sniffy.android.syncdata.provider"
+	        
+	        android:syncable="true"
+	        android:label="@string/sync_data_provider_label"/>
+	        
+        <service android:name="com.brand.sniffy.android.AccountAuthenticatorService"
+		 android:exported="true" android:process=":auth">
+			 <intent-filter>
+			  	<action android:name="android.accounts.AccountAuthenticator" />
+			 </intent-filter>
+			 <meta-data android:name="android.accounts.AccountAuthenticator"
+			  android:resource="@xml/authenticator" />
+		</service>
+		<service
+                android:name="com.brand.sniffy.android.SyncService"
+                android:exported="true"
+                android:process=":sync">
             <intent-filter>
-                <action android:name="com.brand.sniffy.Synchronization" >
-                </action>
+                <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
-        </receiver>
+            <meta-data android:name="android.content.SyncAdapter"
+                    android:resource="@xml/syncadapter" />
+        </service>
     </application>
 
 </manifest>

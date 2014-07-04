@@ -1,17 +1,24 @@
-package com.brand.sniffy.android;
+package com.brand.sniffy.android.activity;
 
 import java.util.Locale;
 
-import com.brand.sniffy.android.R;
-import com.brand.sniffy.android.API.MainActivityNavigation;
+import com.brand.sniffy.android.fragment.DashboardFragment;
+import com.brand.sniffy.android.fragment.HistoryFragment;
+import com.brand.sniffy.android.fragment.HistoryFragment.OnOpenItemListener;
+import com.brand.sniffy.android.fragment.HistoryFragment.OnRefreshItemListener;
+import com.brand.sniffy.android.fragment.HistoryFragment.OnShareItemListener;
+import com.brand.sniffy.android.fragment.HistoryFragmentImpl;
+import com.brand.sniffy.android.fragment.ScanerFragmentImpl;
+import com.brand.sniffy.android.fragment.ScanerFragment;
+import com.brand.sniffy.android.fragment.ScanerFragment.OnSearchListener;
 import com.brand.sniffy.android.model.Product;
+import com.brand.sniffy.android.model.Scanning;
 import com.brand.sniffy.android.service.ProductService;
 import com.brand.sniffy.android.service.ScanningService;
-import com.brand.sniffy.android.service.SynchronizationService;
-
+import com.brand.sniffy.android.service.SessionManager;
+import com.brand.sniffy.android.R;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,54 +28,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.method.HideReturnsTransformationMethod;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.WindowManager;
 
-public class MainActivity extends FragmentActivity implements ActionBar.TabListener, MainActivityNavigation {
+public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
     static final int PRODUCT_REQUEST_CODE = 1;
 
-	/**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-     * will keep every loaded fragment in memory. If this becomes too memory
-     * intensive, it may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     
     private ProductService productService;
     
     private ScanningService scanningService;
     
-    private SynchronizationService synchronizationService;
-    
-    private ProgressDialog progressDialog;
-    
-    private ProductService getProductService(){
-    	if(productService == null){
-    		productService = new ProductService(this);
-    	}
-    	return productService;
-    }
-    
-    private ScanningService getScanningService() {
-    	if (scanningService == null){
-    		scanningService= new ScanningService(this);
-    	}
-		return scanningService;
-	}
-    
-    private SynchronizationService getSynchronizationService(){
-    	if(synchronizationService == null){
-    		synchronizationService = new SynchronizationService(this);
-    	}
-    	
-    	return synchronizationService;
-    }
+    private SessionManager sessionManager;
 
+    private HistoryFragmentController historyFragmentController = new HistoryFragmentController();
+    
+    private ScanerFragmentController scanerFragmentController = new ScanerFragmentController();
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -78,6 +59,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sessionManager = new SessionManager(this);
+        scanningService= new ScanningService(this, sessionManager.getCurrentUser());
+        productService = new ProductService(this, sessionManager.getCurrentUser());
         
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -113,13 +97,18 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setTabListener(this));
         }
         
-        getSynchronizationService().requestSynchronization();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        menu.getItem(0).setOnMenuItemClickListener(new OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem arg0) {
+				sessionManager.logoutUser();
+				return true;
+			}
+		});
         return true;
     }
     
@@ -147,7 +136,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     	private static final int HISTORY_TAB = 1;
     	
     	private static final int DASHBOARD_TAB = 2;
-    	
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -158,10 +146,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Fragment fragment = null;
             switch(position){
             case SCANER_TAB:
-            	fragment = new ScanerFragment();
+            	fragment = new ScanerFragmentImpl();
             	break;
             case HISTORY_TAB:
-            	fragment = new HistoryFragment();
+            	fragment = new HistoryFragmentImpl();
             	break;
             case DASHBOARD_TAB:
             	fragment = new DashboardFragment();
@@ -190,13 +178,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
             return null;
         }
+        
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+        	Fragment f = (Fragment)super.instantiateItem(container, position);
+        	if(f instanceof HistoryFragment){
+        		((HistoryFragment) f).addOnOpenItemListener(historyFragmentController);
+        		((HistoryFragment) f).addOnRefreshItemListener(historyFragmentController);
+        		((HistoryFragment) f).addOnShareItemListener(historyFragmentController);
+        	}
+        	else if(f instanceof ScanerFragment){
+        		((ScanerFragment) f).addOnSearchListner(scanerFragmentController);
+        	}
+        	return f;
+        }
     }
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		
-		if(requestCode == ScanerFragment.SCAN_REQUEST_CODE){
+		if(requestCode == ScanerFragmentImpl.SCAN_REQUEST_CODE){
 			if(resultCode == RESULT_OK){
 				String contents = data.getStringExtra("SCAN_RESULT");
 				this.search(contents);
@@ -215,7 +217,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		}*/
 	}
 
-	@Override
 	public void search(String barcode) {
 		AsyncTask<String, Void, Product> task = new AsyncTask<String, Void, Product>(){
 
@@ -229,22 +230,40 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 				if(arguments.length == 0){
 					throw new IllegalArgumentException("Barcode argument required.");
 				}
-				
+
 				String barcode = arguments[0];
-				Product product = getProductService().findProduct(barcode);
-				if(product == null){
-					product = getProductService().createLocalProduct(barcode);
+				String status = null;
+				Product product = null;
+				
+				try{
+					product = productService.findProduct(barcode);
+					if(product == null){
+						status = Scanning.STATUS_NOT_FOUND;
+					}
+					else{
+						status = Scanning.STATUS_FOUND;
+					}
+				}
+				catch(IllegalArgumentException e){
+					status = Scanning.STATUS_REJECTED;
+				}
+				catch(IllegalStateException e){
+					status = Scanning.STATUS_PENDING;
+				}
+				catch (Exception e) {
+					Log.e(MainActivity.class.getName(), "Error while searching for product. ", e);
+					status = Scanning.STATUS_FAILED;
 				}
 
-				getScanningService().create(barcode, product);
+				scanningService.create(barcode, product, status);
 				return product;
 			}
 			
 			@Override
-			protected void onPostExecute(Product result) {
+			protected void onPostExecute(Product product) {
 				hideProgressBar();
-				openProductDetails(result);
-				super.onPostExecute(result);
+				openProductDetails(product);
+				super.onPostExecute(product);
 			}
 			
 		};
@@ -252,25 +271,107 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 		task.execute(barcode);
 
 	}
+	
+	private void openProductDetails(Product product) {
+		Intent intent = new Intent(this, ProductDetailsActivity.class);
+		if(product != null){
+			intent.putExtra(ProductDetailsActivity.PRODUCT_PARAMETER, product);
+		}
+		
+		startActivityForResult(intent, PRODUCT_REQUEST_CODE);
+	}
 
 	protected void hideProgressBar() {
-		 if (progressDialog != null) {
-             progressDialog.dismiss();
-		 }
+		// if (progressDialog != null) {
+         //    progressDialog.dismiss();
+		 //}
 	}
 
 	private void showProgressBar() {
-		progressDialog = ProgressDialog.show(this,
-				this.getString(R.string.search_product_title),
-				this.getString(R.string.search_product_text),
-                true);
+		//progressDialog = ProgressDialog.show(this,
+		//		this.getString(R.string.search_product_title),
+		//		this.getString(R.string.search_product_text),
+         //       true);
+	}
+	
+	private class ScanerFragmentController implements OnSearchListener{
+
+		@Override
+		public void onSearch(String barcode, ScanerFragment scanningFragment) {
+			search(barcode);
+		}
 		
 	}
 
-	@Override
-	public void openProductDetails(Product product) {
-		Intent intent = new Intent(this, ProductDetailsActivity.class);
-		intent.putExtra(ProductDetailsActivity.PRODUCT_PARAMETER, product);
-		startActivityForResult(intent, PRODUCT_REQUEST_CODE);
+	private class HistoryFragmentController implements OnOpenItemListener, OnRefreshItemListener, OnShareItemListener{
+
+		@Override
+		public void onShareItem(Scanning item, HistoryFragment historyFragment) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onRefreshItem(final Scanning item,final HistoryFragment historyFragment) {
+			AsyncTask<String, Void, Product> task = new AsyncTask<String, Void, Product>(){
+
+				@Override
+				protected void onPreExecute() {
+					showProgressBar();
+				};
+				
+				@Override
+				protected Product doInBackground(String... arguments) {
+					if(arguments.length == 0){
+						throw new IllegalArgumentException("Barcode argument required.");
+					}
+
+					String barcode = arguments[0];
+					String status = null;
+					Product product = null;
+					
+					try{
+						product = productService.findProduct(barcode);
+						if(product == null){
+							status = Scanning.STATUS_NOT_FOUND;
+						}
+						else{
+							status = Scanning.STATUS_FOUND;
+						}
+					}
+					catch(IllegalArgumentException e){
+						status = Scanning.STATUS_REJECTED;
+					}
+					catch(IllegalStateException e){
+						status = Scanning.STATUS_PENDING;
+					}
+					catch (Exception e) {
+						Log.e(MainActivity.class.getName(), "Error while searching for product. ", e);
+						status = Scanning.STATUS_FAILED;
+					}
+
+					item.setStatus(status);
+					item.setFoundProduct(product);
+					scanningService.update(item);
+					return product;
+				}
+				
+				@Override
+				protected void onPostExecute(Product product) {
+					historyFragment.refreshHistoryFragment();
+					hideProgressBar();
+					super.onPostExecute(product);
+				}
+				
+			};
+
+			task.execute(item.getBarecode());
+		}
+
+		@Override
+		public void onOpenItem(Scanning item, HistoryFragment historyFragment) {
+			openProductDetails(item.getFoundProduct());
+		}
 	}
+	
 }

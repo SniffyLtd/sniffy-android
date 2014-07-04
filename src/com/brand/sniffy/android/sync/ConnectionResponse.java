@@ -1,23 +1,16 @@
 package com.brand.sniffy.android.sync;
 
+import org.apache.http.HttpStatus;
 import org.json.JSONObject;
 import org.json.JSONException;
 
 public class ConnectionResponse {
 
-	public static final String OK_STATUS = "ok";
-	
-	public static final String NOT_FOUND_STATUS = "notFound";
+	public static final int CONNECTION_ERROR = 1;
 
-	private static final String SERVER_ERROR = "serverError";
+	public static final int PARSE_RESULT_ERROR = 2;
 
-	private static final String CONNECTION_ERROR = "connectionError";
-
-	private static final String PARSE_RESULT_ERROR = "parseResultError";
-
-	private static final String OTHER_HTTP_ERROR_ERROR = "Other";
-	
-	private String status;
+	private int status;
 
 	private JSONObject result;
 	
@@ -39,23 +32,23 @@ public class ConnectionResponse {
 		this.result = response;
 	}
 
-	public String getStatus() {
+	public int getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	//public void setStatus(String status) {
+//		this.status = status;
+//	}
 	
 	public static ConnectionResponse createSuccessResponse(JSONObject result){
 		ConnectionResponse response = new ConnectionResponse();
-		response.status = OK_STATUS;
+		response.status = HttpStatus.SC_OK;
 		response.result = result;
 		return response;
 	}
 	public static ConnectionResponse createServerErrorResponse(JSONObject reason){
 		ConnectionResponse response = new ConnectionResponse();
-		response.status = SERVER_ERROR;
+		response.status = HttpStatus.SC_INTERNAL_SERVER_ERROR;
 		response.reason = reason;
 		return response;
 	}
@@ -73,9 +66,9 @@ public class ConnectionResponse {
 		response.reason = prepareReason("Unable to parse http success response to JSON.");
 		return response;
 	}
-	public static ConnectionResponse createOtherErrorResponse(String reason){
+	public static ConnectionResponse createOtherErrorResponse(String reason, int status){
 		ConnectionResponse response = new ConnectionResponse();
-		response.status = OTHER_HTTP_ERROR_ERROR;
+		response.status = status;
 		response.reason = prepareReason(reason);
 		return response;
 	}
@@ -93,8 +86,20 @@ public class ConnectionResponse {
 
 	public static ConnectionResponse createNotFountErrorResponse() {
 		ConnectionResponse response = new ConnectionResponse();
-		response.status = NOT_FOUND_STATUS;
+		response.status = HttpStatus.SC_NOT_FOUND;
 		response.reason = prepareReason("Request parameter not found.");
+		return response;
+	}
+
+	public static ConnectionResponse createForbiddenResponse() {
+		ConnectionResponse response = new ConnectionResponse();
+		response.status = HttpStatus.SC_FORBIDDEN;
+		return response;
+	}
+
+	public static ConnectionResponse createUnauthorizedResponse() {
+		ConnectionResponse response = new ConnectionResponse();
+		response.status = HttpStatus.SC_UNAUTHORIZED;
 		return response;
 	}
 	
